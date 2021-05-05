@@ -51,13 +51,12 @@ class MonthBalanceGraphFragment(private val transactions: List<Transaction>) : F
         val pickedDate = possibleDates[position].toLocalDate()
         val pickedTransactions =
             transactions.filter { it.date.monthValue == pickedDate.monthValue && it.date.year == pickedDate.year }
-        if (pickedTransactions.size < 2) {
-            Snackbar
-                .make(requireView(), "Wykres jest dostępny dla miesięcy z co najmniej dwoma transakcjami", LENGTH_LONG)
-                .setAction("Action", null)
-                .show()
-            graphDatePicker.setSelection(pickedPosition)
+        if (pickedTransactions.groupBy { it.date }.size < 2) {
+            balanceGraphUnavailableMessage.visibility = View.VISIBLE
+            transactionsGraphView.visibility = View.INVISIBLE
         } else {
+            balanceGraphUnavailableMessage.visibility = View.INVISIBLE
+            transactionsGraphView.visibility = View.VISIBLE
             val pickedMonthLength = pickedDate.month.length(Year.of(pickedDate.year).isLeap)
             transactionsGraphView.setTransactions(pickedTransactions, pickedMonthLength)
             pickedPosition = position

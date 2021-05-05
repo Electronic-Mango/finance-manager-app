@@ -25,4 +25,5 @@
     <string name="switch_view_description">Przełącz widok listy i wykresu</string>
     <string name="main_activity_bottom_panel_switcher_description">Przełącznik pomiędzy widokiem listy transakcji a wykresem miesięcznym</string>
     <string name="minus_sign">-</string>
+    <string name="balance_graph_unavailable_message">Wykres jest dostępny dla miesięcy z transakcjami wprowadzonymi co najmniej w dwóch różnych dniach.</string>
 </resources>
