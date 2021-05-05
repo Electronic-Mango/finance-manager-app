@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.prmproject1.AddTransactionActivity">
+    <item
+        android:id="@+id/share"
+        android:icon="@drawable/ic_share_transaction"
+        android:orderInCategory="100"
+        android:title="@string/add_transaction_action_share"
+        app:showAsAction="always" />
+</menu>

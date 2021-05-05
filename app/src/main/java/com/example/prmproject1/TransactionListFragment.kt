@@ -12,22 +12,11 @@ import com.example.prmproject1.database.Transaction
 /**
  * A [Fragment] representing a list of [Transaction].
  */
-class TransactionListFragment(
-    private val transactions: MutableList<Transaction>
-) : Fragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return (inflater.inflate(
-            R.layout.fragment_transaction_list,
-            container,
-            false
-        ) as RecyclerView).apply {
+class TransactionListFragment(private val transactions: MutableList<Transaction>) : Fragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return (inflater.inflate(R.layout.fragment_transaction_list, container, false) as RecyclerView).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = TransactionRecyclerViewAdapter(transactions)
         }
     }
-
 }

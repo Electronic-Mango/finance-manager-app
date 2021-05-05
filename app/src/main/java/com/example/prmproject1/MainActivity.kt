@@ -2,7 +2,6 @@ package com.example.prmproject1
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -13,10 +12,11 @@ import androidx.room.Room
 import com.example.prmproject1.Common.ADD_TRANSACTION_REQUEST_CODE
 import com.example.prmproject1.Common.INTENT_DATA_CATEGORY
 import com.example.prmproject1.Common.INTENT_DATA_DATE
-import com.example.prmproject1.Common.INTENT_DESCRIPTION_DATA
-import com.example.prmproject1.Common.MODIFY_TRANSACTION_REQUEST_CODE
 import com.example.prmproject1.Common.INTENT_DATA_POSITION
 import com.example.prmproject1.Common.INTENT_DATA_VALUE
+import com.example.prmproject1.Common.INTENT_DESCRIPTION_DATA
+import com.example.prmproject1.Common.MODIFY_TRANSACTION_REQUEST_CODE
+import com.example.prmproject1.Common.TRANSACTIONS_DATABASE_NAME
 import com.example.prmproject1.database.Transaction
 import com.example.prmproject1.database.TransactionDatabase
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_transaction_list.*
 import java.time.LocalDate
 import java.time.format.TextStyle.FULL_STANDALONE
 import java.util.*
-import java.util.stream.Collectors
+import java.util.function.DoublePredicate
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
@@ -33,14 +33,13 @@ import kotlin.concurrent.thread
  * Main [AppCompatActivity] of the app, displays all recorded transactions.
  */
 class MainActivity : AppCompatActivity() {
-
     private val transactions = ArrayList<Transaction>()
     private val allTransactionsFragment = TransactionListFragment(transactions)
     private val monthBalanceFragment = MonthBalanceGraph()
-    private var showingTransactionList = true
     private val database by lazy {
-        Room.databaseBuilder(this, TransactionDatabase::class.java, "transactions.sb").build()
+        Room.databaseBuilder(this, TransactionDatabase::class.java, TRANSACTIONS_DATABASE_NAME).build()
     }
+    private var showingTransactionList = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,13 +47,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbarActivityMain)
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         supportActionBar!!.setDisplayShowHomeEnabled(false)
-
-        switchToGraphView(contentMainActivityLayout.rootView)
-
-        fabActivityMain.setOnClickListener {
-            val intent = Intent(this, AddTransactionActivity::class.java)
-            startActivityForResult(intent, ADD_TRANSACTION_REQUEST_CODE)
-        }
 
         thread {
             val initialTransactions = database.transactionDao().getAll()
@@ -64,43 +56,18 @@ class MainActivity : AppCompatActivity() {
                 updateMonthlySummary()
             }
         }
+
+        switchBottomView(contentMainActivityLayout.rootView)
+
+        fabActivityMain.setOnClickListener {
+            val intent = Intent(this, AddTransactionActivity::class.java)
+            startActivityForResult(intent, ADD_TRANSACTION_REQUEST_CODE)
+        }
     }
 
     override fun onStart() {
         super.onStart()
         updateMonthlySummary()
-    }
-
-    private fun updateMonthlySummary() {
-        val currentDate = LocalDate.now()
-        val currentMonth = currentDate.month
-            .getDisplayName(FULL_STANDALONE, Locale("pl"))
-            .toUpperCase(Locale.ROOT)
-
-        summaryCurrentMonth.text = getString(R.string.summary_current_month_text, currentMonth, currentDate.year)
-
-        val currentMonthTransactions = transactions.stream().filter { transaction ->
-            transaction.date.monthValue == currentDate.monthValue && transaction.date.year == currentDate.year
-        }.map(Transaction::value).collect(Collectors.toList())
-        val income = currentMonthTransactions.stream().mapToDouble(Double::toDouble).filter { value -> value > 0.0 }.sum()
-        val expenses = currentMonthTransactions.stream().mapToDouble(Double::toDouble).filter { value -> value < 0.0 }.sum()
-        val balance = income + expenses
-
-        summaryCurrentIncome.text = income.toString()
-        summaryCurrentExpenses.text = expenses.toString()
-        summaryCurrentBalance.text = balance.toString()
-        val balanceColor = when {
-            balance > 0.0 -> {
-                R.color.balance_positive
-            }
-            balance < 0.0 -> {
-                R.color.balance_negative
-            }
-            else -> {
-                R.color.black
-            }
-        }
-        summaryCurrentBalance.setTextColor(getColor(this, balanceColor))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -111,51 +78,70 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleAddTransactionResult(resultCode: Int, data: Intent) {
-        when (resultCode) {
-            RESULT_CANCELED -> Log.d("MainActivityLog", "Cancelled creating new transaction")
-            RESULT_OK -> {
-                val newTransaction = extractTransactionFromIntentData(data)
-                thread {
-                    database.transactionDao().insert(newTransaction)
-                    runOnUiThread {
-                        transactions.add(newTransaction)
-                        transactionRecyclerView.adapter?.notifyDataSetChanged()
-                        updateMonthlySummary()
-                    }
-                }
+    private fun updateMonthlySummary() {
+        val currentDate = LocalDate.now()
+        val currentMonth = currentDate.month
+            .getDisplayName(FULL_STANDALONE, Locale("pl"))
+            .toUpperCase(Locale.ROOT)
+
+        summaryCurrentMonth.text = getString(R.string.summary_current_month_text, currentMonth, currentDate.year)
+
+        val income = getCurrentMonthTransactionsSum(currentDate) { value -> value > 0.0 }
+        val expenses = getCurrentMonthTransactionsSum(currentDate) { value -> value < 0.0 }
+        val balance = income + expenses
+
+        summaryCurrentIncome.text = income.toString()
+        summaryCurrentExpenses.text = expenses.toString()
+        summaryCurrentBalance.text = balance.toString()
+        val balanceColor = when {
+            balance > 0.0 -> R.color.balance_positive
+            balance < 0.0 -> R.color.balance_negative
+            else -> R.color.black
+        }
+        summaryCurrentBalance.setTextColor(getColor(this, balanceColor))
+    }
+
+    private fun getCurrentMonthTransactionsSum(currentDate: LocalDate, predicate: DoublePredicate): Double {
+        return transactions.stream()
+            .filter { transaction ->
+                transaction.date.monthValue == currentDate.monthValue && transaction.date.year == currentDate.year
             }
+            .mapToDouble(Transaction::value)
+            .filter(predicate)
+            .sum()
+    }
+
+    private fun handleAddTransactionResult(resultCode: Int, data: Intent) {
+        if (resultCode != RESULT_OK) return
+        val newTransaction = extractTransactionFromIntentData(data)
+        transactions.add(newTransaction)
+        transactionRecyclerView.adapter?.notifyDataSetChanged()
+        updateMonthlySummary()
+        thread {
+            database.transactionDao().insert(newTransaction)
         }
     }
 
     private fun handleModifyTransactionResult(resultCode: Int, data: Intent) {
-        when (resultCode) {
-            RESULT_CANCELED -> Log.d("MainActivityLog", "Cancelled modifying transaction")
-            RESULT_OK -> {
-                val position = data.getIntExtra(INTENT_DATA_POSITION, -1)
-                val id = transactions[position].id
-                val updatedTransaction = extractTransactionFromIntentData(data, id)
-                thread {
-                    database.transactionDao().update(updatedTransaction)
-                    runOnUiThread {
-                        transactions[position] = updatedTransaction
-                        transactionRecyclerView.adapter?.notifyDataSetChanged()
-                        updateMonthlySummary()
-                    }
-                }
-            }
+        if (resultCode != RESULT_OK) return
+        val position = data.getIntExtra(INTENT_DATA_POSITION, -1)
+        val id = transactions[position].id
+        val updatedTransaction = extractTransactionFromIntentData(data, id)
+        transactions[position] = updatedTransaction
+        transactionRecyclerView.adapter?.notifyDataSetChanged()
+        updateMonthlySummary()
+        thread {
+            database.transactionDao().update(updatedTransaction)
         }
     }
 
     fun handleRemoveTransaction(position: Int) {
         val transactionToRemove = transactions[position]
+        transactions.remove(transactionToRemove)
+        transactionRecyclerView.adapter?.notifyDataSetChanged()
+        updateMonthlySummary()
         thread {
             database.transactionDao().delete(transactionToRemove)
-            runOnUiThread {
-                transactions.remove(transactionToRemove)
-                transactionRecyclerView.adapter?.notifyDataSetChanged()
-                updateMonthlySummary()
-            }
         }
     }
 
@@ -167,7 +153,7 @@ class MainActivity : AppCompatActivity() {
         return Transaction(id, value, date, category, description)
     }
 
-    fun switchToGraphView(view: View) {
+    fun switchBottomView(view: View) {
         val fragmentToShow = if (showingTransactionList) allTransactionsFragment else monthBalanceFragment
         supportFragmentManager.beginTransaction()
             .replace(R.id.mainActivityBottomContainer, fragmentToShow, "MONTH_SUMMARY_GRAPH")
@@ -178,19 +164,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 }

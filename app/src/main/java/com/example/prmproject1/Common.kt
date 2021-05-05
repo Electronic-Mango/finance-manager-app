@@ -1,8 +1,8 @@
 package com.example.prmproject1
 
-import android.graphics.Color
-
 object Common {
+    const val TRANSACTIONS_DATABASE_NAME = "transactions.db"
+
     const val ADD_TRANSACTION_REQUEST_CODE = 1
     const val MODIFY_TRANSACTION_REQUEST_CODE = 2
 

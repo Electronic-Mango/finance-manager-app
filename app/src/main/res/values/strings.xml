@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Manager Finansów</string>
-    <string name="action_settings">Ustawienia</string>
+    <string name="main_action_settings">Ustawienia</string>
     <string name="add_new_transaction">Dodaj nową transakcję</string>
     <string name="title_activity_add_transaction">Dodaj nową transakcję</string>
     <string name="title_activity_modify_transaction">Aktualizuj transakcję</string>
+    <string name="add_transaction_action_share">Udostępnij</string>
 
     <string name="summary_current_month_text">%s %d</string>
 
