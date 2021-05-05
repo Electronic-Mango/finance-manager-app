@@ -7,7 +7,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PRMProject1">
+        android:theme="@style/Theme.PRMProject1" >
         <activity
             android:name="com.prm.project1.addtransactionactivity.AddTransactionActivity"
             android:label="@string/title_activity_add_transaction"
@@ -21,6 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="com.prm.project1.provider"
+            android:name="com.prm.project1.FinancialManagerContentProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:label="Financial Manager Content Provider" />
     </application>
 
 </manifest>

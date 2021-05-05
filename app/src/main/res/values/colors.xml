@@ -11,9 +11,9 @@
     <color name="balance_positive">#4CAF50</color>
     <color name="balance_negative">#F43636</color>
 
-    <color name="category_income">#008A2E</color>
-    <color name="category_bills">#B10000</color>
-    <color name="category_food">#0066BF</color>
-    <color name="category_health">#C66600</color>
-    <color name="category_entertainment">#A80057</color>
+    <color name="category_income">#00B53C</color>
+    <color name="category_bills">#000000</color>
+    <color name="category_food">#0070D1</color>
+    <color name="category_health">#FF8300</color>
+    <color name="category_entertainment">#DF0074</color>
 </resources>
