@@ -9,9 +9,9 @@ import java.time.LocalDate
  */
 @Entity
 data class Transaction(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Long,
     val value: Double,
     val date: LocalDate,
     val category: String,
-    val description: String
+    val place: String
 )

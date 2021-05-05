@@ -16,7 +16,7 @@ import com.prm.project1.Common.INTENT_DATA_CATEGORY
 import com.prm.project1.Common.INTENT_DATA_DATE
 import com.prm.project1.Common.INTENT_DATA_POSITION
 import com.prm.project1.Common.INTENT_DATA_VALUE
-import com.prm.project1.Common.INTENT_DESCRIPTION_DATA
+import com.prm.project1.Common.INTENT_PLACE_DATA
 import com.prm.project1.R
 import com.prm.project1.addtransactionactivity.AddTransactionActivity
 import com.prm.project1.database.Transaction
@@ -44,7 +44,7 @@ class TransactionRecyclerViewAdapter(private val transactions: List<Transaction>
         private val valueView = view.transactionFragmentValue
         private val dateView = view.transactionFragmentDate
         private val categoryView = view.transactionFragmentCategory
-        private val descriptionView = view.transactionFragmentDescription
+        private val placeView = view.transactionFragmentPlace
 
         init {
             view.setOnClickListener(this)
@@ -57,7 +57,7 @@ class TransactionRecyclerViewAdapter(private val transactions: List<Transaction>
             setValueViewColor(transaction.value)
             dateView.text = transaction.date.toString()
             categoryView.text = transaction.category
-            descriptionView.text = transaction.description
+            placeView.text = transaction.place
             CATEGORIES[transaction.category]?.let {
                 itemView.categoryIndicator.background.setTint(getColor(itemView.context, it))
             }
@@ -75,7 +75,7 @@ class TransactionRecyclerViewAdapter(private val transactions: List<Transaction>
                 putExtra(INTENT_DATA_VALUE, valueView.text.toString().toDouble())
                 putExtra(INTENT_DATA_DATE, dateView.text.toString())
                 putExtra(INTENT_DATA_CATEGORY, categoryView.text.toString())
-                putExtra(INTENT_DESCRIPTION_DATA, descriptionView.text.toString())
+                putExtra(INTENT_PLACE_DATA, placeView.text.toString())
             }
             (itemView.context as MainActivity).modifyTransaction(intent)
         }

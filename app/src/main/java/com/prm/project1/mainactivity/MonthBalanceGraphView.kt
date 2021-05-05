@@ -10,17 +10,18 @@ import androidx.core.content.ContextCompat.getColor
 import com.prm.project1.R
 import com.prm.project1.database.Transaction
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 private data class Point(val x: Double, val y: Double)
 
-private const val CANVAS_PADDING = 2f
+private const val VIEW_PADDING = 2f
 
+/**
+ * [View] representing distribution of [Transaction] in a given month.
+ */
 class MonthBalanceGraphView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
 
-    private val pointsToDraw = mutableListOf<Pair<List<Point>, Paint>>()
-    private var xMax = 0.0
-    private var yMin = 0.0
-    private var yMax = 0.0
     private val graphLinePositive = Paint().apply {
         color = getColor(context, R.color.balance_positive)
         strokeWidth = 5f
@@ -36,18 +37,20 @@ class MonthBalanceGraphView(context: Context, attributeSet: AttributeSet) : View
         strokeWidth = 3f
         isAntiAlias = true
     }
+    private lateinit var pointsToDraw: List<Pair<List<Point>, Paint>>
+    private var xMax = 0.0
+    private var yMin = 0.0
+    private var yMax = 0.0
 
     fun setTransactions(newTransactions: List<Transaction>, monthLength: Int) {
         xMax = monthLength.toDouble()
-        val convertedPoints = convertTransactionsToPoints(newTransactions.reversed())
-        yMin = convertedPoints.flatMap { it.first }.minByOrNull { it.y }?.y ?: 0.0
-        yMax = convertedPoints.flatMap { it.first }.maxByOrNull { it.y }?.y ?: 0.0
-        pointsToDraw.clear()
-        pointsToDraw.addAll(convertedPoints)
+        pointsToDraw = convertTransactionsToPoints(newTransactions.reversed())
+        yMin = min(pointsToDraw.flatMap { it.first }.minByOrNull { it.y }?.y ?: 0.0, 0.0)
+        yMax = max(pointsToDraw.flatMap { it.first }.maxByOrNull { it.y }?.y ?: 0.0, 0.0)
         invalidate()
     }
 
-    private fun convertTransactionsToPoints(transactions: List<Transaction>): List<Pair<List<Point>, Paint>> {
+    private fun convertTransactionsToPoints(transactions: List<Transaction>): List<Pair<MutableList<Point>, Paint>> {
         val points = mutableListOf<Pair<MutableList<Point>, Paint>>()
         var balance = 0.0
 
@@ -57,67 +60,81 @@ class MonthBalanceGraphView(context: Context, attributeSet: AttributeSet) : View
             val newBalance = balance + totalDayExpenses
             val newPoint = Point(day, newBalance)
             when {
-                points.isEmpty() -> {
-                    val startingPaint = if (newBalance > 0) graphLinePositive else graphLineNegative
-                    points.add(Pair(mutableListOf(newPoint), startingPaint))
-                }
-                (newBalance >= 0.0) != (balance >= 0.0) -> {
-                    val paint = if (newBalance > 0) graphLinePositive else graphLineNegative
-                    val lastPoint = points.last().first.last()
-                    val distanceToZero = abs((newPoint.x - lastPoint.x) * lastPoint.y / (newPoint.y - lastPoint.y))
-                    val middlePoint = Point(distanceToZero + lastPoint.x, 0.0)
-                    points.last().first.add(middlePoint)
-                    val newPointsGroup = mutableListOf(middlePoint, newPoint)
-                    points.add(Pair(newPointsGroup, paint))
-                }
-                else -> {
-                    points.last().first.add(newPoint)
-                }
+                points.isEmpty() -> points.add(prepareInitialPointData(newBalance, newPoint))
+                (newBalance >= 0.0) != (balance >= 0.0) -> preparePointDataCrossingXAxis(points, newBalance, newPoint)
+                else -> points.last().first.add(newPoint)
             }
-
             balance = newBalance
         }
 
         return points
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        if (pointsToDraw.flatMap { it.first }.size < 2) return
-        pointsToDraw.forEach { drawGraphLine(canvas, it.first, it.second) }
-        drawFinalPoint(canvas)
-        drawAxis(canvas)
+    private fun prepareInitialPointData(newBalance: Double, newPoint: Point): Pair<MutableList<Point>, Paint> {
+        val startingPaint = if (newBalance > 0) graphLinePositive else graphLineNegative
+        return Pair(mutableListOf(newPoint), startingPaint)
     }
 
-    private fun drawGraphLine(canvas: Canvas, points: List<Point>, paint: Paint) {
+    private fun preparePointDataCrossingXAxis(
+        points: MutableList<Pair<MutableList<Point>, Paint>>,
+        newBalance: Double,
+        newPoint: Point
+    ) {
+        val paint = if (newBalance > 0) graphLinePositive else graphLineNegative
+        val lastPoint = points.last().first.last()
+        val distanceToZero = abs((newPoint.x - lastPoint.x) * lastPoint.y / (newPoint.y - lastPoint.y))
+        val middlePoint = Point(distanceToZero + lastPoint.x, 0.0)
+        points.last().first.add(middlePoint)
+        val newPointsGroup = mutableListOf(middlePoint, newPoint)
+        points.add(Pair(newPointsGroup, paint))
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        if (!this::pointsToDraw.isInitialized || pointsToDraw.flatMap { it.first }.size < 2) return
+        pointsToDraw.forEach { canvas.drawGraphLine(it.first, it.second) }
+        canvas.drawFinalPoint()
+        canvas.drawAxis()
+    }
+
+    private fun Canvas.drawGraphLine(points: List<Point>, paint: Paint) {
         if (points.isEmpty()) return
         val linesArray = mutableListOf<Float>()
         points.forEach {
-            val newX = it.x.canvasX()
-            val newY = it.y.canvasY()
+            val newX = it.x.viewX()
+            val newY = it.y.viewY()
+            // Adding double to ensure that lines are continuous.
             linesArray.add(newX)
             linesArray.add(newY)
             linesArray.add(newX)
             linesArray.add(newY)
         }
+        // Removing first and last point so that each quadruplet is between two different points.
         linesArray.removeFirst()
         linesArray.removeFirst()
         linesArray.removeLast()
         linesArray.removeLast()
-        canvas.drawLines(linesArray.toFloatArray(), paint)
+        drawLines(linesArray.toFloatArray(), paint)
     }
 
-    private fun drawAxis(canvas: Canvas) {
-        canvas.drawLine(CANVAS_PADDING, CANVAS_PADDING, CANVAS_PADDING, height - CANVAS_PADDING, axisLinePaint)
-        canvas.drawLine(CANVAS_PADDING, 0.0.canvasY(), width - CANVAS_PADDING, 0.0.canvasY(), axisLinePaint)
+    private fun Canvas.drawAxis() {
+        // Y axis
+        drawLine(VIEW_PADDING, VIEW_PADDING, VIEW_PADDING, height - VIEW_PADDING, axisLinePaint)
+        // X axis is either on the very top, very bottom, or somewhere in the middle, depending on given data
+        val xAxisYCoordinate = when {
+            yMin > 0 -> height - VIEW_PADDING
+            yMax < 0 -> VIEW_PADDING
+            else -> 0.0.viewY()
+        }
+        drawLine(VIEW_PADDING, xAxisYCoordinate, width - VIEW_PADDING, xAxisYCoordinate, axisLinePaint)
     }
 
-    private fun drawFinalPoint(canvas: Canvas) {
+    private fun Canvas.drawFinalPoint() {
         val lastPoint = pointsToDraw.last().first.last()
-        canvas.drawCircle(lastPoint.x.canvasX(), lastPoint.y.canvasY(), 10f, pointsToDraw.last().second)
+        drawCircle(lastPoint.x.viewX(), lastPoint.y.viewY(), 10f, pointsToDraw.last().second)
     }
 
-    private fun Double.canvasX() = (this / xMax * (width - (CANVAS_PADDING * 2))).toFloat()
+    private fun Double.viewX() = (this / xMax * (width - (VIEW_PADDING * 2))).toFloat()
 
-    private fun Double.canvasY() = ((yMax - this) / (yMax - yMin) * (height - (CANVAS_PADDING * 2))).toFloat()
+    private fun Double.viewY() = ((yMax - this) / (yMax - yMin) * (height - (VIEW_PADDING * 2))).toFloat()
 }

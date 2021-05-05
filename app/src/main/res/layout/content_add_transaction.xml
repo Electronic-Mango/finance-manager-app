@@ -110,14 +110,14 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/addTransactionFragmentDescriptionLabel"
+                android:id="@+id/addTransactionFragmentPlaceLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@id/addTransactionFragmentDescription"
-                android:text="@string/description_label" />
+                android:labelFor="@id/addTransactionFragmentPlace"
+                android:text="@string/place_label" />
 
             <EditText
-                android:id="@+id/addTransactionFragmentDescription"
+                android:id="@+id/addTransactionFragmentPlace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"

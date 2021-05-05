@@ -17,7 +17,7 @@ interface TransactionDao {
     fun getAll(): List<Transaction>
 
     @Insert
-    fun insert(transaction: Transaction)
+    fun insert(transaction: Transaction): Long
 
     @Update
     fun update(transaction: Transaction)

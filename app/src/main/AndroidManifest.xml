@@ -11,6 +11,7 @@
         <activity
             android:name="com.prm.project1.addtransactionactivity.AddTransactionActivity"
             android:label="@string/title_activity_add_transaction"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.PRMProject1.NoActionBar" />
         <activity
             android:name="com.prm.project1.mainactivity.MainActivity"

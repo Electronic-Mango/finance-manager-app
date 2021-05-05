@@ -3,17 +3,20 @@ package com.prm.project1.addtransactionactivity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.prm.project1.Common.CATEGORIES
+import com.prm.project1.Common.INCOME_CATEGORY
 import com.prm.project1.Common.INTENT_DATA_CATEGORY
 import com.prm.project1.Common.INTENT_DATA_DATE
 import com.prm.project1.Common.INTENT_DATA_POSITION
 import com.prm.project1.Common.INTENT_DATA_VALUE
-import com.prm.project1.Common.INTENT_DESCRIPTION_DATA
+import com.prm.project1.Common.INTENT_PLACE_DATA
+import com.prm.project1.Common.LARGEST_VALUE
 import com.prm.project1.R
 import kotlinx.android.synthetic.main.activity_add_transaction.*
 import kotlinx.android.synthetic.main.content_add_transaction.*
@@ -29,7 +32,7 @@ class AddTransactionActivity : AppCompatActivity() {
     private var value: Double = 0.0
     private var date: LocalDate = LocalDate.now()
     private lateinit var category: String
-    private lateinit var description: String
+    private lateinit var place: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,12 @@ class AddTransactionActivity : AppCompatActivity() {
         ArrayAdapter(this, android.R.layout.simple_list_item_1, android.R.id.text1, CATEGORIES.keys.toList()).let {
             it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             addTransactionFragmentCategory.adapter = it
+        }
+
+        chipGroup.setOnCheckedChangeListener { _, checkedId ->
+            if (checkedId == R.id.chipIncome) {
+                addTransactionFragmentCategory.setSelection(CATEGORIES.keys.indexOf(INCOME_CATEGORY), true)
+            }
         }
     }
 
@@ -64,7 +73,7 @@ class AddTransactionActivity : AppCompatActivity() {
         chipGroup.check(if (value < 0) R.id.chipExpense else R.id.chipIncome)
         addTransactionFragmentValue.setText(value.toBigDecimal().abs().setScale(2).toPlainString())
         addTransactionFragmentDatePickerButton.text = intent.getStringExtra(INTENT_DATA_DATE).toString()
-        addTransactionFragmentDescription.setText(intent.getStringExtra(INTENT_DESCRIPTION_DATA).toString())
+        addTransactionFragmentPlace.setText(intent.getStringExtra(INTENT_PLACE_DATA).toString())
         val category = intent.getStringExtra(INTENT_DATA_CATEGORY).toString()
         addTransactionFragmentCategory.setSelection(CATEGORIES.keys.toList().indexOf(category))
 
@@ -72,10 +81,15 @@ class AddTransactionActivity : AppCompatActivity() {
     }
 
     private fun isProvidedValueCorrect(): Boolean {
-        val valueText = addTransactionFragmentValue.text
-        return if (valueText.isEmpty() || valueText.toString().toDouble() == 0.0) {
+        val valueText = addTransactionFragmentValue.text.toString()
+        Log.d("ADD", "value=${valueText.toBigDecimal()} max=${Double.MAX_VALUE.toBigDecimal()}")
+        return if (valueText.isEmpty() || valueText.toDouble() == 0.0) {
             addTransactionFragmentValue.requestFocus()
             addTransactionFragmentValue.error = "Podaj wartość transakcji!"
+            false
+        } else if (valueText.toDouble() > LARGEST_VALUE) {
+            addTransactionFragmentValue.requestFocus()
+            addTransactionFragmentValue.error = "Zbyt dużą wartość! Maksymalna wartość to $LARGEST_VALUE."
             false
         } else {
             true
@@ -88,7 +102,7 @@ class AddTransactionActivity : AppCompatActivity() {
         value = readValue.toDouble()
         date = addTransactionFragmentDatePickerButton.text.let { LocalDate.parse(it) }
         category = addTransactionFragmentCategory.selectedItem.toString()
-        description = addTransactionFragmentDescription.text.toString()
+        place = addTransactionFragmentPlace.text.toString()
     }
 
     private fun readAndParseValuesFromFieldsIntoIntent(): Intent {
@@ -98,7 +112,7 @@ class AddTransactionActivity : AppCompatActivity() {
             putExtra(INTENT_DATA_VALUE, value)
             putExtra(INTENT_DATA_DATE, date)
             putExtra(INTENT_DATA_CATEGORY, category)
-            putExtra(INTENT_DESCRIPTION_DATA, description)
+            putExtra(INTENT_PLACE_DATA, place)
         }
     }
 
@@ -137,7 +151,7 @@ class AddTransactionActivity : AppCompatActivity() {
         readEditTextFieldsToValues()
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, "Transakcja: $value, $date, $category, $description")
+            putExtra(Intent.EXTRA_TEXT, "Transakcja: $value, $date, $category, $place")
             type = "text/plain"
         }
         val shareIntent = Intent.createChooser(sendIntent, "Udostępnij transakcję")

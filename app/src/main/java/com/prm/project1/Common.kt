@@ -14,13 +14,18 @@ object Common {
     const val INTENT_DATA_VALUE = "INTENT_DATA_VALUE"
     const val INTENT_DATA_DATE = "INTENT_DATA_DATE"
     const val INTENT_DATA_CATEGORY = "INTENT_DATA_CATEGORY"
-    const val INTENT_DESCRIPTION_DATA = "INTENT_DESCRIPTION_DATA"
+    const val INTENT_PLACE_DATA = "INTENT_PLACE_DATA"
 
+    const val LARGEST_VALUE = 1000000000000000.0
+
+    const val INCOME_CATEGORY = "Przychód"
     val CATEGORIES = mapOf(
         "Rachunki" to R.color.category_bills,
         "Jedzenie" to R.color.category_food,
+        "Zakupy" to R.color.category_groceries,
         "Zdrowie" to R.color.category_health,
         "Rozrywka" to R.color.category_entertainment,
-        "Przychód" to R.color.category_income
+        "Transport" to R.color.category_transport,
+        INCOME_CATEGORY to R.color.category_income
     )
 }
