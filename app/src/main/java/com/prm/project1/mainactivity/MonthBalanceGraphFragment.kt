@@ -15,13 +15,16 @@ import com.prm.project1.database.Transaction
 import kotlinx.android.synthetic.main.fragment_month_balance_graph.*
 import java.time.LocalDate
 import java.time.Year
+import java.time.format.TextStyle.FULL_STANDALONE
+import java.util.*
 
 /**
  * [Fragment] displaying a graph all [Transaction] in a month.
  */
 class MonthBalanceGraphFragment(private val transactions: List<Transaction>) : Fragment(), OnItemSelectedListener {
-    private lateinit var possibleDates: List<String>
+    private lateinit var possibleDates: List<SpinnerData>
     private var pickedPosition = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_month_balance_graph, container, false)
     }
@@ -33,7 +36,7 @@ class MonthBalanceGraphFragment(private val transactions: List<Transaction>) : F
     }
 
     fun updateTransactions() {
-        possibleDates = transactions.map { transactionToMonthAndYearString(it) }.distinct()
+        possibleDates = transactions.map { SpinnerData(it.date) }.distinct()
         ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, android.R.id.text1, possibleDates).let {
             it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             graphDatePicker.adapter = it
@@ -41,22 +44,15 @@ class MonthBalanceGraphFragment(private val transactions: List<Transaction>) : F
         graphDatePicker.setSelection(pickedPosition)
     }
 
-    private fun transactionToMonthAndYearString(transaction: Transaction): String {
-        val year = transaction.date.year
-        val month = String.format("%02d", transaction.date.month.value)
-        return "$year-$month"
-    }
-
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val pickedDate = LocalDate.parse("${possibleDates[position]}-01")
+        val pickedDate = possibleDates[position].toLocalDate()
         val pickedTransactions =
             transactions.filter { it.date.monthValue == pickedDate.monthValue && it.date.year == pickedDate.year }
         if (pickedTransactions.size < 2) {
-            Snackbar.make(
-                requireView(),
-                "Wykres jest dostępny dla miesięcy z co najmniej dwoma transakcjami.",
-                LENGTH_LONG
-            ).setAction("Action", null).show()
+            Snackbar
+                .make(requireView(), "Wykres jest dostępny dla miesięcy z co najmniej dwoma transakcjami", LENGTH_LONG)
+                .setAction("Action", null)
+                .show()
             graphDatePicker.setSelection(pickedPosition)
         } else {
             val pickedMonthLength = pickedDate.month.length(Year.of(pickedDate.year).isLeap)
@@ -66,4 +62,24 @@ class MonthBalanceGraphFragment(private val transactions: List<Transaction>) : F
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+}
+
+private class SpinnerData(date: LocalDate) {
+    private val month = date.month
+    private val year = date.year
+
+    fun toLocalDate(): LocalDate = LocalDate.of(year, month, 1)
+
+    override fun toString(): String {
+        val monthString = month.getDisplayName(FULL_STANDALONE, Locale("pl")).toUpperCase(Locale.ROOT)
+        return "$monthString $year"
+    }
+
+    override fun hashCode(): Int = Objects.hash(month, year)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || other !is SpinnerData) return false
+        return month == other.month && year == other.year
+    }
 }
