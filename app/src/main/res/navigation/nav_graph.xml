@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navGraph"
-    app:startDestination="@id/transactionFragment">
+    app:startDestination="@id/mainActvityFragment">
 
     <fragment
-        android:id="@+id/transactionFragment"
-        android:name="com.example.prmproject1.TransactionListFragment"
-        android:label="fragment_transaction_list"
-        tools:layout="@layout/fragment_transaction_list" />
+        android:id="@+id/mainActvityFragment"
+        android:name="com.example.prmproject1.MainActivityFragment"
+        android:label="fragment_main_actvity"
+        tools:layout="@layout/fragment_main_activity" />
 </navigation>

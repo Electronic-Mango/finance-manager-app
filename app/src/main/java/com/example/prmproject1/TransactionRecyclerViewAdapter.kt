@@ -21,7 +21,7 @@ class TransactionRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        val transaction = transactions[position]
+        val transaction = transactions[transactions.size - position - 1]
         holder.valueView.text = transaction.value.toString()
         holder.dateView.text = transaction.date.toString()
         holder.categoryView.text = transaction.category
@@ -29,11 +29,6 @@ class TransactionRecyclerViewAdapter(
     }
 
     override fun getItemCount(): Int = transactions.size
-
-    fun addNewTransaction(transaction: Transaction) {
-        transactions.add(transaction)
-        notifyDataSetChanged()
-    }
 
     inner class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val valueView: TextView = view.transactionFragmentValue

@@ -7,7 +7,7 @@ import java.time.LocalDate
  */
 data class Transaction(
     var id: Int,
-    var value: Float,
+    var value: Double,
     var date: LocalDate,
     var category: String,
     var description: String

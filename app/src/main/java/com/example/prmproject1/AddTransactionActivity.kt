@@ -36,7 +36,7 @@ class AddTransactionActivity : AppCompatActivity() {
     }
 
     private fun readAndParseValuesFromFields(): Intent {
-        val value = addTransactionFragmentValue.text.toString().toFloat()
+        val value = addTransactionFragmentValue.text.toString().toDouble()
         val date = addTransactionFragmentDatePickerButton.text.let { LocalDate.parse(it) }
         val category = addTransactionFragmentCategory.text.toString()
         val description = addTransactionFragmentDescription.text.toString()
