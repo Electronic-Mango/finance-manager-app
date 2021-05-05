@@ -4,6 +4,7 @@ package com.prm.project1
  * Object containing constants used by entire application.
  */
 object Common {
+
     const val DB_NAME = "transactions.db"
 
     const val ADD_TRANSACTION_REQUEST_CODE = 1

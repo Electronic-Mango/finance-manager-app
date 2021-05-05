@@ -12,6 +12,7 @@ import androidx.room.Update
  */
 @Dao
 interface TransactionDao {
+
     @Query("SELECT * FROM `Transaction`")
     fun getAll(): List<Transaction>
 

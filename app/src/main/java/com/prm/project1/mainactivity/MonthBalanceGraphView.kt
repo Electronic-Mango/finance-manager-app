@@ -15,8 +15,9 @@ private data class Point(val x: Double, val y: Double)
 
 private const val CANVAS_PADDING = 2f
 
-class TransactionsGraphView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
-    private val points = mutableListOf<Pair<List<Point>, Paint>>()
+class MonthBalanceGraphView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
+
+    private val pointsToDraw = mutableListOf<Pair<List<Point>, Paint>>()
     private var xMax = 0.0
     private var yMin = 0.0
     private var yMax = 0.0
@@ -33,6 +34,7 @@ class TransactionsGraphView(context: Context, attributeSet: AttributeSet) : View
     private val axisLinePaint = Paint().apply {
         color = Color.DKGRAY
         strokeWidth = 3f
+        isAntiAlias = true
     }
 
     fun setTransactions(newTransactions: List<Transaction>, monthLength: Int) {
@@ -40,8 +42,8 @@ class TransactionsGraphView(context: Context, attributeSet: AttributeSet) : View
         val convertedPoints = convertTransactionsToPoints(newTransactions.reversed())
         yMin = convertedPoints.flatMap { it.first }.minByOrNull { it.y }?.y ?: 0.0
         yMax = convertedPoints.flatMap { it.first }.maxByOrNull { it.y }?.y ?: 0.0
-        points.clear()
-        points.addAll(convertedPoints)
+        pointsToDraw.clear()
+        pointsToDraw.addAll(convertedPoints)
         invalidate()
     }
 
@@ -81,8 +83,8 @@ class TransactionsGraphView(context: Context, attributeSet: AttributeSet) : View
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (points.flatMap { it.first }.size < 2) return
-        points.forEach { drawGraphLine(canvas, it.first, it.second) }
+        if (pointsToDraw.flatMap { it.first }.size < 2) return
+        pointsToDraw.forEach { drawGraphLine(canvas, it.first, it.second) }
         drawFinalPoint(canvas)
         drawAxis(canvas)
     }
@@ -111,8 +113,8 @@ class TransactionsGraphView(context: Context, attributeSet: AttributeSet) : View
     }
 
     private fun drawFinalPoint(canvas: Canvas) {
-        val lastPoint = points.last().first.last()
-        canvas.drawCircle(lastPoint.x.canvasX(), lastPoint.y.canvasY(), 10f, points.last().second)
+        val lastPoint = pointsToDraw.last().first.last()
+        canvas.drawCircle(lastPoint.x.canvasX(), lastPoint.y.canvasY(), 10f, pointsToDraw.last().second)
     }
 
     private fun Double.canvasX() = (this / xMax * (width - (CANVAS_PADDING * 2))).toFloat()

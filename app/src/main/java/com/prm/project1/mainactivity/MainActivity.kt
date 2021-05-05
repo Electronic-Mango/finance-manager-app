@@ -26,6 +26,7 @@ import kotlin.concurrent.thread
  * Main [AppCompatActivity] of the app, displays all recorded transactions.
  */
 class MainActivity : AppCompatActivity() {
+
     private val transactions = mutableListOf<Transaction>()
     private val database by lazy { Room.databaseBuilder(this, TransactionDatabase::class.java, DB_NAME).build() }
     private val sectionsPagerAdapter by lazy { SectionsPagerAdapter(this, transactions, supportFragmentManager) }
@@ -43,13 +44,17 @@ class MainActivity : AppCompatActivity() {
             runOnUiThread {
                 transactions.addAll(initialTransactions)
                 transactions.sortByDescending { it.date }
+                sectionsPagerAdapter.updateTransactions()
             }
         }
 
+        configureTabsAndViewPager()
         fabActivityMain.setOnClickListener(this::addNewTransaction)
+    }
+
+    private fun configureTabsAndViewPager() {
         viewPager.adapter = sectionsPagerAdapter
         mainActivityTabs.setupWithViewPager(viewPager)
-
         for (i in 0 until mainActivityTabs.tabCount) {
             mainActivityTabs.getTabAt(i)?.setIcon(
                 when (i) {
@@ -59,7 +64,6 @@ class MainActivity : AppCompatActivity() {
                 }
             )
         }
-
         viewPager.addOnPageChangeListener(object : SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 when (position) {

@@ -10,5 +10,6 @@ import androidx.room.TypeConverters
 @Database(entities = [Transaction::class], version = 1)
 @TypeConverters(LocalDateStringConverter::class)
 abstract class TransactionDatabase : RoomDatabase() {
+
     abstract fun transactionDao(): TransactionDao
 }

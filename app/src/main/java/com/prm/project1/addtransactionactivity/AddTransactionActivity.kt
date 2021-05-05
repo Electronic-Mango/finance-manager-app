@@ -24,6 +24,7 @@ import java.time.LocalDate
  * [AppCompatActivity] responsible for creating new, or modifying [com.prm.project1.database.Transaction].
  */
 class AddTransactionActivity : AppCompatActivity() {
+
     private var position: Int = 0
     private var value: Double = 0.0
     private var date: LocalDate = LocalDate.now()

@@ -5,7 +5,7 @@
     android:id="@+id/mainActivityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mainactivity.MainActivity" >
+    tools:context=".mainactivity.MainActivity">
 
     <com.google.android.material.chip.Chip
         android:id="@+id/summaryCurrentMonth"
@@ -147,10 +147,10 @@
         android:id="@+id/transactionRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        tools:listitem="@layout/fragment_transaction"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider5" />
+        app:layout_constraintTop_toBottomOf="@+id/divider5"
+        tools:listitem="@layout/fragment_transaction" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

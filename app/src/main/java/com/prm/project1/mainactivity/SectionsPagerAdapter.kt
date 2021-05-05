@@ -16,12 +16,15 @@ class SectionsPagerAdapter(
     transactions: List<Transaction>,
     fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-    private val transactionsListFragment = TransactionsListFragment(transactions)
-    private val monthBalanceGraph = MonthBalanceGraphFragment(transactions)
-    private val pages = arrayOf(
-        Pair(R.string.all_transaction_list_tab, transactionsListFragment),
-        Pair(R.string.month_transaction_graph_tab, monthBalanceGraph)
-    )
+
+    private val transactionsListFragment by lazy { TransactionsListFragment(transactions) }
+    private val monthBalanceGraph by lazy { MonthBalanceGraphFragment(transactions) }
+    private val pages by lazy {
+        arrayOf(
+            Pair(R.string.all_transaction_list_tab, transactionsListFragment),
+            Pair(R.string.month_transaction_graph_tab, monthBalanceGraph)
+        )
+    }
 
     override fun getItem(position: Int): Fragment = pages[position].second
 

@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_transaction.view.*
  * [RecyclerView.Adapter] that can display list of [Transaction].
  */
 class TransactionRecyclerViewAdapter(private val transactions: List<Transaction>) : Adapter<TransactionViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_transaction, parent, false)
         return TransactionViewHolder(view)

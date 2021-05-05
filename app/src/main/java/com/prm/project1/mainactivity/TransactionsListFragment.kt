@@ -21,6 +21,7 @@ import java.util.function.DoublePredicate
  * and summary of current month.
  */
 class TransactionsListFragment(private val transactions: List<Transaction>) : Fragment() {
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_transactions_list, container, false)
     }
@@ -35,14 +36,14 @@ class TransactionsListFragment(private val transactions: List<Transaction>) : Fr
     }
 
     fun updateTransactions() {
-        transactionRecyclerView.adapter?.notifyDataSetChanged()
+        transactionRecyclerView?.adapter?.notifyDataSetChanged()
         updateMonthlySummary()
     }
 
     private fun updateMonthlySummary() {
         val currentDate = LocalDate.now()
         val currentMonth = currentDate.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale("pl"))
-        summaryCurrentMonth.text = getString(R.string.summary_current_month_text, currentMonth, currentDate.year)
+        summaryCurrentMonth?.text = getString(R.string.summary_current_month_text, currentMonth, currentDate.year)
         updateMonthlySummaryValues(currentDate)
     }
 
@@ -51,20 +52,20 @@ class TransactionsListFragment(private val transactions: List<Transaction>) : Fr
         val expenses = getCurrentMonthTransactionsSum(currentDate) { value -> value < 0.0 }
         val balance = income + expenses
 
-        summaryCurrentIncome.text = income.toPlainString()
-        summaryCurrentExpenses.text = expenses.abs().toPlainString()
-        summaryCurrentBalance.text = balance.abs().toPlainString()
+        summaryCurrentIncome?.text = income.toPlainString()
+        summaryCurrentExpenses?.text = expenses.abs().toPlainString()
+        summaryCurrentBalance?.text = balance.abs().toPlainString()
         val balanceColor = when {
             balance.toDouble() > 0.0 -> R.color.balance_positive
             balance.toDouble() < 0.0 -> R.color.balance_negative
             else -> R.color.black
         }
-        summaryCurrentBalance.setTextColor(ContextCompat.getColor(requireContext(), balanceColor))
+        summaryCurrentBalance?.setTextColor(ContextCompat.getColor(requireContext(), balanceColor))
         val balanceSignColor = when {
             balance.toDouble() < 0.0 -> balanceColor
             else -> R.color.transparent
         }
-        summaryBalanceSign.setTextColor(ContextCompat.getColor(requireContext(), balanceSignColor))
+        summaryBalanceSign?.setTextColor(ContextCompat.getColor(requireContext(), balanceSignColor))
 
     }
 

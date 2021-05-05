@@ -8,8 +8,6 @@
     <string name="all_transaction_list_tab">Lista</string>
     <string name="month_transaction_graph_tab">Wykres</string>
 
-    <string name="hello_blank_fragment">Hello future graph…</string>
-
     <string name="category_indicator">Indykator kategorii</string>
     <string name="value_label">Kwota:</string>
     <string name="date_label">Data:</string>

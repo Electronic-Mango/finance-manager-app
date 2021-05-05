@@ -12,6 +12,7 @@ import com.prm.project1.database.TransactionDatabase
  * Content provider sharing [com.prm.project1.database.Transaction], but not allowing any modifications.
  */
 class FinancialManagerContentProvider : ContentProvider() {
+
     private lateinit var database: TransactionDatabase
 
     override fun onCreate(): Boolean {

@@ -22,6 +22,7 @@ import java.util.*
  * [Fragment] displaying a graph all [Transaction] in a month.
  */
 class MonthBalanceGraphFragment(private val transactions: List<Transaction>) : Fragment(), OnItemSelectedListener {
+
     private lateinit var possibleDates: List<SpinnerData>
     private var pickedPosition = 0
 
@@ -37,11 +38,13 @@ class MonthBalanceGraphFragment(private val transactions: List<Transaction>) : F
 
     fun updateTransactions() {
         possibleDates = transactions.map { SpinnerData(it.date) }.distinct()
-        ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, android.R.id.text1, possibleDates).let {
-            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            graphDatePicker.adapter = it
+        context?.let { context ->
+            ArrayAdapter(context, android.R.layout.simple_spinner_item, possibleDates).let {
+                it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                graphDatePicker.adapter = it
+            }
+            graphDatePicker.setSelection(pickedPosition)
         }
-        graphDatePicker.setSelection(pickedPosition)
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

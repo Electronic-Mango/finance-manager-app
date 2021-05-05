@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_accept_new_transaction"
-        android:contentDescription="@string/apply_transaction_description" />
+        android:contentDescription="@string/apply_transaction_description"
+        app:srcCompat="@drawable/ic_accept_new_transaction" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
