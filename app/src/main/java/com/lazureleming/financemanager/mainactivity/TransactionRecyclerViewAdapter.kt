@@ -1,4 +1,4 @@
-package com.prm.project1.mainactivity
+package com.lazureleming.financemanager.mainactivity
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -11,16 +11,16 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.prm.project1.Common.CATEGORIES
-import com.prm.project1.Common.INTENT_DATA_CATEGORY
-import com.prm.project1.Common.INTENT_DATA_DATE
-import com.prm.project1.Common.INTENT_DATA_POSITION
-import com.prm.project1.Common.INTENT_DATA_VALUE
-import com.prm.project1.Common.INTENT_PLACE_DATA
-import com.prm.project1.R
-import com.prm.project1.addtransactionactivity.AddTransactionActivity
-import com.prm.project1.database.Transaction
-import com.prm.project1.mainactivity.TransactionRecyclerViewAdapter.TransactionViewHolder
+import com.lazureleming.financemanager.Common.CATEGORIES
+import com.lazureleming.financemanager.Common.INTENT_DATA_CATEGORY
+import com.lazureleming.financemanager.Common.INTENT_DATA_DATE
+import com.lazureleming.financemanager.Common.INTENT_DATA_POSITION
+import com.lazureleming.financemanager.Common.INTENT_DATA_VALUE
+import com.lazureleming.financemanager.Common.INTENT_PLACE_DATA
+import com.lazureleming.financemanager.R
+import com.lazureleming.financemanager.addtransactionactivity.AddTransactionActivity
+import com.lazureleming.financemanager.database.Transaction
+import com.lazureleming.financemanager.mainactivity.TransactionRecyclerViewAdapter.TransactionViewHolder
 import kotlinx.android.synthetic.main.fragment_transaction.view.*
 
 /**

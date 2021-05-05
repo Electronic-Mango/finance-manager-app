@@ -1,4 +1,4 @@
-package com.prm.project1.mainactivity
+package com.lazureleming.financemanager.mainactivity
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,8 +7,8 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
-import com.prm.project1.R
-import com.prm.project1.database.Transaction
+import com.lazureleming.financemanager.R
+import com.lazureleming.financemanager.database.Transaction
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min

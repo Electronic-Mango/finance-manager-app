@@ -1,4 +1,4 @@
-package com.prm.project1.database
+package com.lazureleming.financemanager.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

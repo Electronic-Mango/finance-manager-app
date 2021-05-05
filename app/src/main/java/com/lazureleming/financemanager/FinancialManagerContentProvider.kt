@@ -1,4 +1,4 @@
-package com.prm.project1
+package com.lazureleming.financemanager
 
 import android.content.ContentProvider
 import android.content.ContentValues
@@ -6,10 +6,10 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
 import androidx.room.Room
-import com.prm.project1.database.TransactionDatabase
+import com.lazureleming.financemanager.database.TransactionDatabase
 
 /**
- * Content provider sharing [com.prm.project1.database.Transaction], but not allowing any modifications.
+ * Content provider sharing [com.lazureleming.financemanager.database.Transaction], but not allowing any modifications.
  */
 class FinancialManagerContentProvider : ContentProvider() {
 
@@ -56,7 +56,7 @@ class FinancialManagerContentProvider : ContentProvider() {
 }
 
 private const val PATH = "transactions"
-private const val AUTHORITY = "com.prm.project1.provider"
+private const val AUTHORITY = "com.lazureleming.financemanager.provider"
 private const val GET_TABLE = 1
 private const val GET_ROW = 2
 

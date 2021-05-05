@@ -1,4 +1,4 @@
-package com.prm.project1.addtransactionactivity
+package com.lazureleming.financemanager.addtransactionactivity
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -9,22 +9,22 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import com.prm.project1.Common.CATEGORIES
-import com.prm.project1.Common.INCOME_CATEGORY
-import com.prm.project1.Common.INTENT_DATA_CATEGORY
-import com.prm.project1.Common.INTENT_DATA_DATE
-import com.prm.project1.Common.INTENT_DATA_POSITION
-import com.prm.project1.Common.INTENT_DATA_VALUE
-import com.prm.project1.Common.INTENT_PLACE_DATA
-import com.prm.project1.Common.LARGEST_VALUE
-import com.prm.project1.R
+import com.lazureleming.financemanager.Common.CATEGORIES
+import com.lazureleming.financemanager.Common.INCOME_CATEGORY
+import com.lazureleming.financemanager.Common.INTENT_DATA_CATEGORY
+import com.lazureleming.financemanager.Common.INTENT_DATA_DATE
+import com.lazureleming.financemanager.Common.INTENT_DATA_POSITION
+import com.lazureleming.financemanager.Common.INTENT_DATA_VALUE
+import com.lazureleming.financemanager.Common.INTENT_PLACE_DATA
+import com.lazureleming.financemanager.Common.LARGEST_VALUE
+import com.lazureleming.financemanager.R
 import kotlinx.android.synthetic.main.activity_add_transaction.*
 import kotlinx.android.synthetic.main.content_add_transaction.*
 import java.math.BigDecimal.ROUND_HALF_EVEN
 import java.time.LocalDate
 
 /**
- * [AppCompatActivity] responsible for creating new, or modifying [com.prm.project1.database.Transaction].
+ * [AppCompatActivity] responsible for creating new, or modifying [com.lazureleming.financemanager.database.Transaction].
  */
 class AddTransactionActivity : AppCompatActivity() {
 

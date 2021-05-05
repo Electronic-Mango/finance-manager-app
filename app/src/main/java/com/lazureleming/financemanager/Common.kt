@@ -1,4 +1,4 @@
-package com.prm.project1
+package com.lazureleming.financemanager
 
 /**
  * Object containing constants used by entire application.

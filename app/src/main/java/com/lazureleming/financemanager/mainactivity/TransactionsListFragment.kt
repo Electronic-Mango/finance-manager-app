@@ -1,4 +1,4 @@
-package com.prm.project1.mainactivity
+package com.lazureleming.financemanager.mainactivity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.prm.project1.R
-import com.prm.project1.database.Transaction
+import com.lazureleming.financemanager.R
+import com.lazureleming.financemanager.database.Transaction
 import kotlinx.android.synthetic.main.fragment_transactions_list.*
 import java.math.BigDecimal
 import java.time.LocalDate

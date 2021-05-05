@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <com.prm.project1.mainactivity.MonthBalanceGraphView
+    <com.lazureleming.financemanager.mainactivity.MonthBalanceGraphView
         android:id="@+id/transactionsGraphView"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -1,4 +1,4 @@
-package com.prm.project1.mainactivity
+package com.lazureleming.financemanager.mainactivity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,10 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import com.prm.project1.R
-import com.prm.project1.database.Transaction
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+import com.lazureleming.financemanager.R
+import com.lazureleming.financemanager.database.Transaction
 import kotlinx.android.synthetic.main.fragment_month_balance_graph.*
 import java.time.LocalDate
 import java.time.Year

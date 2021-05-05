@@ -1,8 +1,7 @@
-package com.prm.project1
+package com.lazureleming.financemanager
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
