@@ -2,77 +2,85 @@ package com.prm.project1.mainactivity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getColor
-import androidx.core.content.ContextCompat.getDrawable
 import androidx.room.Room
+import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener
 import com.prm.project1.Common.ADD_TRANSACTION_REQUEST_CODE
+import com.prm.project1.Common.DB_NAME
 import com.prm.project1.Common.INTENT_DATA_CATEGORY
 import com.prm.project1.Common.INTENT_DATA_DATE
 import com.prm.project1.Common.INTENT_DATA_POSITION
 import com.prm.project1.Common.INTENT_DATA_VALUE
 import com.prm.project1.Common.INTENT_DESCRIPTION_DATA
 import com.prm.project1.Common.MODIFY_TRANSACTION_REQUEST_CODE
-import com.prm.project1.Common.TRANSACTIONS_DATABASE_NAME
 import com.prm.project1.R
 import com.prm.project1.addtransactionactivity.AddTransactionActivity
 import com.prm.project1.database.Transaction
 import com.prm.project1.database.TransactionDatabase
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_main_activity.*
-import kotlinx.android.synthetic.main.fragment_transaction_list.*
-import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.format.TextStyle.FULL_STANDALONE
-import java.util.*
-import java.util.function.DoublePredicate
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 /**
  * Main [AppCompatActivity] of the app, displays all recorded transactions.
  */
 class MainActivity : AppCompatActivity() {
-    private val transactions = ArrayList<Transaction>()
-    private val allTransactionsFragment = TransactionListFragment(transactions)
-    private val monthBalanceFragment = MonthBalanceGraph()
-    private val database by lazy {
-        Room.databaseBuilder(this, TransactionDatabase::class.java, TRANSACTIONS_DATABASE_NAME).build()
-    }
-    private var showingTransactionList = true
+    private val transactions = mutableListOf<Transaction>()
+    private val database by lazy { Room.databaseBuilder(this, TransactionDatabase::class.java, DB_NAME).build() }
+    private val sectionsPagerAdapter by lazy { SectionsPagerAdapter(this, transactions, supportFragmentManager) }
+    private var newActivityLaunched = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbarActivityMain)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        supportActionBar!!.setDisplayShowHomeEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
 
         thread {
             val initialTransactions = database.transactionDao().getAll()
             runOnUiThread {
                 transactions.addAll(initialTransactions)
-                transactionRecyclerView.adapter?.notifyDataSetChanged()
-                updateMonthlySummary()
+                transactions.sortByDescending { it.date }
             }
         }
 
-        switchBottomView()
+        fabActivityMain.setOnClickListener(this::addNewTransaction)
+        viewPager.adapter = sectionsPagerAdapter
+        mainActivityTabs.setupWithViewPager(viewPager)
 
-        fabActivityMain.setOnClickListener {
-            val intent = Intent(this, AddTransactionActivity::class.java)
-            startActivityForResult(intent, ADD_TRANSACTION_REQUEST_CODE)
+        for (i in 0 until mainActivityTabs.tabCount) {
+            mainActivityTabs.getTabAt(i)?.setIcon(
+                when (i) {
+                    sectionsPagerAdapter.fragmentPosition(TransactionsListFragment::class) -> R.drawable.ic_transaction_list
+                    sectionsPagerAdapter.fragmentPosition(MonthBalanceGraphFragment::class) -> R.drawable.ic_balance_chart
+                    else -> throw IllegalArgumentException("Unexpected tab!")
+                }
+            )
         }
+
+        viewPager.addOnPageChangeListener(object : SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    sectionsPagerAdapter.fragmentPosition(TransactionsListFragment::class) -> fabActivityMain.show()
+                    sectionsPagerAdapter.fragmentPosition(MonthBalanceGraphFragment::class) -> fabActivityMain.hide()
+                }
+            }
+        })
     }
 
-    override fun onStart() {
-        super.onStart()
-        updateMonthlySummary()
-        fabMainActivityBottomPanelSwitcher.setOnClickListener {
-            switchBottomView()
-        }
+    private fun addNewTransaction(view: View) {
+        if (newActivityLaunched) return
+        newActivityLaunched = true
+        val intent = Intent(this, AddTransactionActivity::class.java)
+        startActivityForResult(intent, ADD_TRANSACTION_REQUEST_CODE)
+    }
+
+    fun modifyTransaction(intent: Intent) {
+        if (newActivityLaunched) return
+        newActivityLaunched = true
+        startActivityForResult(intent, MODIFY_TRANSACTION_REQUEST_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -81,53 +89,15 @@ class MainActivity : AppCompatActivity() {
             MODIFY_TRANSACTION_REQUEST_CODE -> data?.let { handleModifyTransactionResult(resultCode, it) }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
-    }
-
-    private fun updateMonthlySummary() {
-        val currentDate = LocalDate.now()
-        val currentMonth = currentDate.month
-            .getDisplayName(FULL_STANDALONE, Locale("pl"))
-            .toUpperCase(Locale.ROOT)
-
-        summaryCurrentMonth.text = getString(R.string.summary_current_month_text, currentMonth, currentDate.year)
-
-        val income = getCurrentMonthTransactionsSum(currentDate) { value -> value > 0.0 }
-        val expenses = getCurrentMonthTransactionsSum(currentDate) { value -> value < 0.0 }
-        val balance = income + expenses
-
-        summaryCurrentIncome.text = income.toPlainString()
-        summaryCurrentExpenses.text = expenses.abs().toPlainString()
-        summaryCurrentBalance.text = balance.abs().toPlainString()
-        val balanceColor = when {
-            balance.toDouble() > 0.0 -> R.color.balance_positive
-            balance.toDouble() < 0.0 -> R.color.balance_negative
-            else -> R.color.black
-        }
-        summaryCurrentBalance.setTextColor(getColor(this, balanceColor))
-        val balanceSignColor = when {
-            balance.toDouble() < 0.0 -> balanceColor
-            else -> R.color.transparent
-        }
-        summaryBalanceSign.setTextColor(getColor(this, balanceSignColor))
-    }
-
-    private fun getCurrentMonthTransactionsSum(currentDate: LocalDate, predicate: DoublePredicate): BigDecimal {
-        return transactions.stream()
-            .filter { transaction ->
-                transaction.date.monthValue == currentDate.monthValue && transaction.date.year == currentDate.year
-            }
-            .mapToDouble(Transaction::value)
-            .filter(predicate)
-            .sum()
-            .toBigDecimal()
+        newActivityLaunched = false
     }
 
     private fun handleAddTransactionResult(resultCode: Int, data: Intent) {
         if (resultCode != RESULT_OK) return
         val newTransaction = extractTransactionFromIntentData(data)
         transactions.add(newTransaction)
-        transactionRecyclerView.adapter?.notifyDataSetChanged()
-        updateMonthlySummary()
+        transactions.sortByDescending { it.date }
+        sectionsPagerAdapter.updateTransactions()
         thread {
             database.transactionDao().insert(newTransaction)
         }
@@ -139,8 +109,8 @@ class MainActivity : AppCompatActivity() {
         val id = transactions[position].id
         val updatedTransaction = extractTransactionFromIntentData(data, id)
         transactions[position] = updatedTransaction
-        transactionRecyclerView.adapter?.notifyDataSetChanged()
-        updateMonthlySummary()
+        transactions.sortByDescending { it.date }
+        sectionsPagerAdapter.updateTransactions()
         thread {
             database.transactionDao().update(updatedTransaction)
         }
@@ -149,8 +119,7 @@ class MainActivity : AppCompatActivity() {
     fun handleRemoveTransaction(position: Int) {
         val transactionToRemove = transactions[position]
         transactions.remove(transactionToRemove)
-        transactionRecyclerView.adapter?.notifyDataSetChanged()
-        updateMonthlySummary()
+        sectionsPagerAdapter.updateTransactions()
         thread {
             database.transactionDao().delete(transactionToRemove)
         }
@@ -162,27 +131,5 @@ class MainActivity : AppCompatActivity() {
         val category = data.getStringExtra(INTENT_DATA_CATEGORY).toString()
         val description = data.getStringExtra(INTENT_DESCRIPTION_DATA).toString()
         return Transaction(id, value, date, category, description)
-    }
-
-    private fun switchBottomView() {
-        val fragmentToShow = if (showingTransactionList) allTransactionsFragment else monthBalanceFragment
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.mainActivityBottomContainer, fragmentToShow, "MONTH_SUMMARY_GRAPH")
-            .commit()
-        val iconId = if (showingTransactionList) R.drawable.ic_balance_chart else R.drawable.ic_transaction_list
-        fabMainActivityBottomPanelSwitcher?.setImageDrawable(getDrawable(applicationContext, iconId))
-        showingTransactionList = !showingTransactionList
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }

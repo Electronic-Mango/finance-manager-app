@@ -20,11 +20,24 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.PRMProject1.PopupOverlay" />
 
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/mainActivityTabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:tabIconTint="@color/white"
+            app:tabIndicatorColor="@color/white"
+            app:tabIndicatorGravity="bottom"
+            app:tabInlineLabel="true"
+            app:tabTextColor="@color/white" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include
-        android:id="@+id/contentMainActivityLayout"
-        layout="@layout/content_main" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabActivityMain"

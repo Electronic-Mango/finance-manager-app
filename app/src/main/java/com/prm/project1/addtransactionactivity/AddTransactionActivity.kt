@@ -3,7 +3,6 @@ package com.prm.project1.addtransactionactivity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,12 +21,12 @@ import java.math.BigDecimal.ROUND_HALF_EVEN
 import java.time.LocalDate
 
 /**
- * [AppCompatActivity] responsible for creating new [com.prm.project1.database.Transaction].
+ * [AppCompatActivity] responsible for creating new, or modifying [com.prm.project1.database.Transaction].
  */
 class AddTransactionActivity : AppCompatActivity() {
     private var position: Int = 0
     private var value: Double = 0.0
-    private lateinit var date: LocalDate
+    private var date: LocalDate = LocalDate.now()
     private lateinit var category: String
     private lateinit var description: String
 
@@ -39,26 +38,18 @@ class AddTransactionActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         addTransactionFragmentDatePickerButton.text = LocalDate.now().toString()
-
-        ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            android.R.id.text1,
-            CATEGORIES.keys.toList()
-        ).let {
+        fabActivityAddTransaction.setOnClickListener(this::finishWithInputData)
+        ArrayAdapter(this, android.R.layout.simple_list_item_1, android.R.id.text1, CATEGORIES.keys.toList()).let {
             it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             addTransactionFragmentCategory.adapter = it
         }
+    }
 
-        fabActivityAddTransaction.setOnClickListener {
-            if (!isProvidedValueCorrect()) {
-                return@setOnClickListener
-            }
-            val data = readAndParseValuesFromFieldsIntoIntent()
-            Log.d("MODIFY_TRANSACTION", "$value")
-            setResult(RESULT_OK, data)
-            finish()
-        }
+    private fun finishWithInputData(view: View) {
+        if (!isProvidedValueCorrect()) return
+        val data = readAndParseValuesFromFieldsIntoIntent()
+        setResult(RESULT_OK, data)
+        finish()
     }
 
     override fun onStart() {
@@ -66,14 +57,17 @@ class AddTransactionActivity : AppCompatActivity() {
         position = intent.getIntExtra(INTENT_DATA_POSITION, -1).apply {
             if (this < 0) return
         }
+
         setTitle(R.string.title_activity_modify_transaction)
         val value = intent.getDoubleExtra(INTENT_DATA_VALUE, 0.0)
         chipGroup.check(if (value < 0) R.id.chipExpense else R.id.chipIncome)
-        addTransactionFragmentValue.setText(value.toBigDecimal().abs().toPlainString())
+        addTransactionFragmentValue.setText(value.toBigDecimal().abs().setScale(2).toPlainString())
         addTransactionFragmentDatePickerButton.text = intent.getStringExtra(INTENT_DATA_DATE).toString()
         addTransactionFragmentDescription.setText(intent.getStringExtra(INTENT_DESCRIPTION_DATA).toString())
         val category = intent.getStringExtra(INTENT_DATA_CATEGORY).toString()
         addTransactionFragmentCategory.setSelection(CATEGORIES.keys.toList().indexOf(category))
+
+        readEditTextFieldsToValues()
     }
 
     private fun isProvidedValueCorrect(): Boolean {
@@ -108,12 +102,12 @@ class AddTransactionActivity : AppCompatActivity() {
     }
 
     fun pickTransactionDate(view: View) {
-        val currentDate = LocalDate.now()
         val datePickerDialog = DatePickerDialog(view.context, { _, year, month, day ->
             LocalDate.of(year, month + 1, day).apply {
                 addTransactionFragmentDatePickerButton.text = toString()
+                date = this
             }
-        }, currentDate.year, currentDate.monthValue, currentDate.dayOfMonth)
+        }, date.year, date.monthValue - 1, date.dayOfMonth)
         datePickerDialog.show()
     }
 
@@ -138,9 +132,7 @@ class AddTransactionActivity : AppCompatActivity() {
     }
 
     private fun shareTransaction() {
-        if (!isProvidedValueCorrect()) {
-            return
-        }
+        if (!isProvidedValueCorrect()) return
         readEditTextFieldsToValues()
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND

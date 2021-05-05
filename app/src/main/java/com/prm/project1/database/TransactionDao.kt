@@ -7,6 +7,9 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 
+/**
+ * Data Access Object for [Transaction].
+ */
 @Dao
 interface TransactionDao {
     @Query("SELECT * FROM `Transaction`")

@@ -8,12 +8,14 @@ import android.net.Uri
 import androidx.room.Room
 import com.prm.project1.database.TransactionDatabase
 
+/**
+ * Content provider sharing [com.prm.project1.database.Transaction], but not allowing any modifications.
+ */
 class FinancialManagerContentProvider : ContentProvider() {
     private lateinit var database: TransactionDatabase
 
     override fun onCreate(): Boolean {
-        database = Room.databaseBuilder(context!!, TransactionDatabase::class.java, Common.TRANSACTIONS_DATABASE_NAME)
-            .build()
+        database = Room.databaseBuilder(context!!, TransactionDatabase::class.java, Common.DB_NAME).build()
         return true
     }
 
@@ -25,25 +27,16 @@ class FinancialManagerContentProvider : ContentProvider() {
         sortOrder: String?
     ): Cursor {
         return when (URI_MATCHER.match(uri)) {
-            GET_TABLE -> {
-                database.transactionDao().getAllRaw()
-            }
-            GET_ROW -> {
-                val id = uri.lastPathSegment!!.toInt()
-                database.transactionDao().getSingleTransactionRaw(id)
-            }
+            GET_TABLE -> database.transactionDao().getAllRaw()
+            GET_ROW -> uri.lastPathSegment!!.toInt().let { database.transactionDao().getSingleTransactionRaw(it) }
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
     }
 
     override fun getType(uri: Uri): String {
         return when (URI_MATCHER.match(uri)) {
-            GET_TABLE -> {
-                TRANSACTIONS_MIME_TYPE
-            }
-            GET_ROW -> {
-                TRANSACTION_MIME_TYPE
-            }
+            GET_TABLE -> TRANSACTIONS_MIME_TYPE
+            GET_ROW -> TRANSACTION_MIME_TYPE
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
     }

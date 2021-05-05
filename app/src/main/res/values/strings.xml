@@ -1,15 +1,16 @@
 <resources>
     <string name="app_name">Manager Finansów</string>
-    <string name="main_action_settings">Ustawienia</string>
+    <string name="list_graph_switcher">Przełącz pomiędzy listą a wykresem</string>
     <string name="add_new_transaction">Dodaj nową transakcję</string>
     <string name="title_activity_add_transaction">Dodaj nową transakcję</string>
     <string name="title_activity_modify_transaction">Aktualizuj transakcję</string>
     <string name="add_transaction_action_share">Udostępnij</string>
+    <string name="all_transaction_list_tab">Lista</string>
+    <string name="month_transaction_graph_tab">Wykres</string>
 
     <string name="hello_blank_fragment">Hello future graph…</string>
 
     <string name="category_indicator">Indykator kategorii</string>
-
     <string name="value_label">Kwota:</string>
     <string name="date_label">Data:</string>
     <string name="category_label">Kategoria:</string>
