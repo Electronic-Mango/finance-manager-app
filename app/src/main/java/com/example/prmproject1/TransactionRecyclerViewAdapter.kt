@@ -1,11 +1,10 @@
 package com.example.prmproject1
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_transaction.view.*
 
 /**
@@ -16,7 +15,8 @@ class TransactionRecyclerViewAdapter(
 ) : RecyclerView.Adapter<TransactionRecyclerViewAdapter.TransactionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_transaction, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.fragment_transaction, parent, false)
         return TransactionViewHolder(view)
     }
 

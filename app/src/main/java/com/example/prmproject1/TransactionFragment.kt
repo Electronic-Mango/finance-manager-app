@@ -1,12 +1,12 @@
 package com.example.prmproject1
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalDateTime
 
 /**
@@ -18,7 +18,11 @@ class TransactionFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return (inflater.inflate(R.layout.fragment_transaction_list, container, false) as RecyclerView).apply {
+        return (inflater.inflate(
+            R.layout.fragment_transaction_list,
+            container,
+            false
+        ) as RecyclerView).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = TransactionRecyclerViewAdapter(getInitialTransactions(100))
         }
@@ -36,7 +40,7 @@ fun getInitialTransactions(count: Int): List<Transaction> {
             "cat $transactionNumber",
             "desc $transactionNumber"
         )
-        transactions.add(transaction);
+        transactions.add(transaction)
     }
     return transactions
 }

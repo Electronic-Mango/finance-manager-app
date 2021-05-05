@@ -2,19 +2,18 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activityMainLayout"
+    android:id="@+id/activityAddTransactionLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".AddTransactionActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayoutActivityMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.PRMProject1.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarActivityMain"
+            android:id="@+id/toolbarActivityAddTransaction"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -23,16 +22,15 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include
-        android:id="@+id/contentMainActivityLayout"
-        layout="@layout/content_main" />
+        android:id="@+id/contentAddTransactionActivityLayout"
+        layout="@layout/content_add_transaction" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabActivityMain"
+        android:id="@+id/fabActivityAddTransaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:contentDescription="@string/add_new_transaction"
-        app:srcCompat="@drawable/ic_add_new_transaction" />
+        app:srcCompat="@drawable/ic_accept_new_transaction" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
