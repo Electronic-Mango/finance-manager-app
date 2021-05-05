@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.prm.project1.addtransactionactivity.AddTransactionActivity
 import com.prm.project1.Common.CATEGORIES
 import com.prm.project1.Common.INTENT_DATA_CATEGORY
 import com.prm.project1.Common.INTENT_DATA_DATE
@@ -21,6 +20,7 @@ import com.prm.project1.Common.INTENT_DATA_VALUE
 import com.prm.project1.Common.INTENT_DESCRIPTION_DATA
 import com.prm.project1.Common.MODIFY_TRANSACTION_REQUEST_CODE
 import com.prm.project1.R
+import com.prm.project1.addtransactionactivity.AddTransactionActivity
 import com.prm.project1.database.Transaction
 import kotlinx.android.synthetic.main.fragment_transaction.view.*
 
@@ -56,7 +56,7 @@ class TransactionRecyclerViewAdapter(private val transactions: MutableList<Trans
 
         fun bind(transaction: Transaction, position: Int) {
             pos = position
-            valueView.text = transaction.value.toString()
+            valueView.text = transaction.value.toBigDecimal().toPlainString()
             valueView.setTextColor(
                 getColor(
                     valueView.context,

@@ -3,6 +3,7 @@ package com.prm.project1.addtransactionactivity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,8 +18,8 @@ import com.prm.project1.Common.INTENT_DESCRIPTION_DATA
 import com.prm.project1.R
 import kotlinx.android.synthetic.main.activity_add_transaction.*
 import kotlinx.android.synthetic.main.content_add_transaction.*
+import java.math.BigDecimal.ROUND_HALF_EVEN
 import java.time.LocalDate
-import kotlin.math.abs
 
 /**
  * [AppCompatActivity] responsible for creating new [com.prm.project1.database.Transaction].
@@ -54,6 +55,7 @@ class AddTransactionActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val data = readAndParseValuesFromFieldsIntoIntent()
+            Log.d("MODIFY_TRANSACTION", "$value")
             setResult(RESULT_OK, data)
             finish()
         }
@@ -66,13 +68,10 @@ class AddTransactionActivity : AppCompatActivity() {
         }
         setTitle(R.string.title_activity_modify_transaction)
         val value = intent.getDoubleExtra(INTENT_DATA_VALUE, 0.0)
-        radioGroup.check(if (value < 0) R.id.radioButtonExpense else R.id.radioButtonIncome)
-        addTransactionFragmentValue.setText(abs(value).toString())
-        addTransactionFragmentDatePickerButton.text =
-            intent.getStringExtra(INTENT_DATA_DATE).toString()
-        addTransactionFragmentDescription.setText(
-            intent.getStringExtra(INTENT_DESCRIPTION_DATA).toString()
-        )
+        chipGroup.check(if (value < 0) R.id.chipExpense else R.id.chipIncome)
+        addTransactionFragmentValue.setText(value.toBigDecimal().abs().toPlainString())
+        addTransactionFragmentDatePickerButton.text = intent.getStringExtra(INTENT_DATA_DATE).toString()
+        addTransactionFragmentDescription.setText(intent.getStringExtra(INTENT_DESCRIPTION_DATA).toString())
         val category = intent.getStringExtra(INTENT_DATA_CATEGORY).toString()
         addTransactionFragmentCategory.setSelection(CATEGORIES.keys.toList().indexOf(category))
     }
@@ -89,8 +88,9 @@ class AddTransactionActivity : AppCompatActivity() {
     }
 
     private fun readEditTextFieldsToValues() {
-        value = addTransactionFragmentValue.text.toString().toDouble()
-        if (radioButtonExpense.isChecked) value = -value
+        var readValue = addTransactionFragmentValue.text.toString().toBigDecimal().setScale(2, ROUND_HALF_EVEN)
+        if (chipExpense.isChecked) readValue = -readValue
+        value = readValue.toDouble()
         date = addTransactionFragmentDatePickerButton.text.let { LocalDate.parse(it) }
         category = addTransactionFragmentCategory.selectedItem.toString()
         description = addTransactionFragmentDescription.text.toString()

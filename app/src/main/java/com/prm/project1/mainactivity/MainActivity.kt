@@ -4,12 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.room.Room
-import com.prm.project1.addtransactionactivity.AddTransactionActivity
 import com.prm.project1.Common.ADD_TRANSACTION_REQUEST_CODE
 import com.prm.project1.Common.INTENT_DATA_CATEGORY
 import com.prm.project1.Common.INTENT_DATA_DATE
@@ -19,11 +17,13 @@ import com.prm.project1.Common.INTENT_DESCRIPTION_DATA
 import com.prm.project1.Common.MODIFY_TRANSACTION_REQUEST_CODE
 import com.prm.project1.Common.TRANSACTIONS_DATABASE_NAME
 import com.prm.project1.R
+import com.prm.project1.addtransactionactivity.AddTransactionActivity
 import com.prm.project1.database.Transaction
 import com.prm.project1.database.TransactionDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main_activity.*
 import kotlinx.android.synthetic.main.fragment_transaction_list.*
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.TextStyle.FULL_STANDALONE
 import java.util.*
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        switchBottomView(contentMainActivityLayout.rootView)
+        switchBottomView()
 
         fabActivityMain.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
@@ -70,6 +70,9 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         updateMonthlySummary()
+        fabMainActivityBottomPanelSwitcher.setOnClickListener {
+            switchBottomView()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -92,18 +95,23 @@ class MainActivity : AppCompatActivity() {
         val expenses = getCurrentMonthTransactionsSum(currentDate) { value -> value < 0.0 }
         val balance = income + expenses
 
-        summaryCurrentIncome.text = income.toString()
-        summaryCurrentExpenses.text = expenses.toString()
-        summaryCurrentBalance.text = balance.toString()
+        summaryCurrentIncome.text = income.toPlainString()
+        summaryCurrentExpenses.text = expenses.abs().toPlainString()
+        summaryCurrentBalance.text = balance.abs().toPlainString()
         val balanceColor = when {
-            balance > 0.0 -> R.color.balance_positive
-            balance < 0.0 -> R.color.balance_negative
+            balance.toDouble() > 0.0 -> R.color.balance_positive
+            balance.toDouble() < 0.0 -> R.color.balance_negative
             else -> R.color.black
         }
         summaryCurrentBalance.setTextColor(getColor(this, balanceColor))
+        val balanceSignColor = when {
+            balance.toDouble() < 0.0 -> balanceColor
+            else -> R.color.transparent
+        }
+        summaryBalanceSign.setTextColor(getColor(this, balanceSignColor))
     }
 
-    private fun getCurrentMonthTransactionsSum(currentDate: LocalDate, predicate: DoublePredicate): Double {
+    private fun getCurrentMonthTransactionsSum(currentDate: LocalDate, predicate: DoublePredicate): BigDecimal {
         return transactions.stream()
             .filter { transaction ->
                 transaction.date.monthValue == currentDate.monthValue && transaction.date.year == currentDate.year
@@ -111,6 +119,7 @@ class MainActivity : AppCompatActivity() {
             .mapToDouble(Transaction::value)
             .filter(predicate)
             .sum()
+            .toBigDecimal()
     }
 
     private fun handleAddTransactionResult(resultCode: Int, data: Intent) {
@@ -155,13 +164,13 @@ class MainActivity : AppCompatActivity() {
         return Transaction(id, value, date, category, description)
     }
 
-    fun switchBottomView(view: View) {
+    private fun switchBottomView() {
         val fragmentToShow = if (showingTransactionList) allTransactionsFragment else monthBalanceFragment
         supportFragmentManager.beginTransaction()
             .replace(R.id.mainActivityBottomContainer, fragmentToShow, "MONTH_SUMMARY_GRAPH")
             .commit()
         val iconId = if (showingTransactionList) R.drawable.ic_balance_chart else R.drawable.ic_transaction_list
-        imageButton?.setImageDrawable(getDrawable(applicationContext, iconId))
+        fabMainActivityBottomPanelSwitcher?.setImageDrawable(getDrawable(applicationContext, iconId))
         showingTransactionList = !showingTransactionList
     }
 

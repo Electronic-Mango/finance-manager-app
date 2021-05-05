@@ -24,7 +24,7 @@ class FinancialManagerContentProvider : ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor {
-        return when(URI_MATCHER.match(uri)) {
+        return when (URI_MATCHER.match(uri)) {
             GET_TABLE -> {
                 database.transactionDao().getAllRaw()
             }
@@ -37,7 +37,7 @@ class FinancialManagerContentProvider : ContentProvider() {
     }
 
     override fun getType(uri: Uri): String {
-        return when(URI_MATCHER.match(uri)) {
+        return when (URI_MATCHER.match(uri)) {
             GET_TABLE -> {
                 TRANSACTIONS_MIME_TYPE
             }
