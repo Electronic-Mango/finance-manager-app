@@ -109,7 +109,7 @@ class AddTransactionActivity : AppCompatActivity() {
 
     fun pickTransactionDate(view: View) {
         val currentDate = LocalDate.now()
-        val datePickerDialog = DatePickerDialog(this, { _, year, month, day ->
+        val datePickerDialog = DatePickerDialog(view.context, { _, year, month, day ->
             LocalDate.of(year, month + 1, day).apply {
                 addTransactionFragmentDatePickerButton.text = toString()
             }

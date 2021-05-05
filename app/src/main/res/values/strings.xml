@@ -20,7 +20,7 @@
     <string name="summary_current_month_text">%s %d</string>
     <string name="month_summary_label">Miesiąc:</string>
     <string name="income_summary_label">Uznania:</string>
-    <string name="expenses_summary_label">Obciążenia:</string>
+    <string name="expenses_summary_label">Wydatki:</string>
     <string name="balance_summary_label">Saldo:</string>
     <string name="apply_transaction_description">Zatwierdź daną transakcję</string>
     <string name="switch_view_description">Przełącz widok listy i wykresu</string>
