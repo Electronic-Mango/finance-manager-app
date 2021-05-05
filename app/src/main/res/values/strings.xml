@@ -3,6 +3,10 @@
     <string name="action_settings">Ustawienia</string>
     <string name="add_new_transaction">Dodaj nową transakcję</string>
     <string name="title_activity_add_transaction">Dodaj nową transakcję</string>
+    <string name="title_activity_modify_transaction">Aktualizuj transakcję</string>
+
+    <string name="summary_current_month_text">%s %d</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

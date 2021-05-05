@@ -64,12 +64,12 @@
                 android:layout_height="wrap_content"
                 android:text="Kategoria:" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/addTransactionFragmentCategory"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName" />
+                android:paddingBottom="8dp" />
+
         </TableRow>
 
         <TableRow
@@ -88,7 +88,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="start|top"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine"
+                android:lines="3" />
 
         </TableRow>
     </TableLayout>

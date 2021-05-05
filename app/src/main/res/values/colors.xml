@@ -7,6 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#4CAF50</color>
-    <color name="red">#F43636</color>
+
+    <color name="balance_positive">#4CAF50</color>
+    <color name="balance_negative">#F43636</color>
+
+    <color name="category_income">#008A2E</color>
+    <color name="category_bills">#B10000</color>
+    <color name="category_food">#0066BF</color>
+    <color name="category_health">#C66600</color>
+    <color name="category_entertainment">#A80057</color>
 </resources>
