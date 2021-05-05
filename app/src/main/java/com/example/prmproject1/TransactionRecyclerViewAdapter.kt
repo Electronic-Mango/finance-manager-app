@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_transaction.view.*
  * [RecyclerView.Adapter] that can display a [Transaction].
  */
 class TransactionRecyclerViewAdapter(
-    private val transactions: List<Transaction>
+    private val transactions: MutableList<Transaction>
 ) : RecyclerView.Adapter<TransactionRecyclerViewAdapter.TransactionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
@@ -29,6 +29,11 @@ class TransactionRecyclerViewAdapter(
     }
 
     override fun getItemCount(): Int = transactions.size
+
+    fun addNewTransaction(transaction: Transaction) {
+        transactions.add(transaction)
+        notifyDataSetChanged()
+    }
 
     inner class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val valueView: TextView = view.transactionFragmentValue

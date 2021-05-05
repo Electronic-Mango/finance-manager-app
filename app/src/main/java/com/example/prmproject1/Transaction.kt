@@ -1,5 +1,6 @@
 package com.example.prmproject1
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
@@ -7,8 +8,8 @@ import java.time.LocalDateTime
  */
 data class Transaction(
     var id: Int,
-    var value: Int,
-    var date: LocalDateTime,
+    var value: Float,
+    var date: LocalDate,
     var category: String,
     var description: String
 )
