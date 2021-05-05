@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.getDrawable
+import androidx.room.Room
 import com.example.prmproject1.Common.ADD_TRANSACTION_REQUEST_CODE
 import com.example.prmproject1.Common.INTENT_DATA_CATEGORY
 import com.example.prmproject1.Common.INTENT_DATA_DATE
@@ -16,6 +17,8 @@ import com.example.prmproject1.Common.INTENT_DESCRIPTION_DATA
 import com.example.prmproject1.Common.MODIFY_TRANSACTION_REQUEST_CODE
 import com.example.prmproject1.Common.INTENT_DATA_POSITION
 import com.example.prmproject1.Common.INTENT_DATA_VALUE
+import com.example.prmproject1.database.Transaction
+import com.example.prmproject1.database.TransactionDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main_activity.*
 import kotlinx.android.synthetic.main.fragment_transaction_list.*
@@ -23,16 +26,21 @@ import java.time.LocalDate
 import java.time.format.TextStyle.FULL_STANDALONE
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 /**
  * Main [AppCompatActivity] of the app, displays all recorded transactions.
  */
 class MainActivity : AppCompatActivity() {
 
-    private val transactions = getInitialTransactions(10)
+    private val transactions = ArrayList<Transaction>()
     private val allTransactionsFragment = TransactionListFragment(transactions)
-    private val monthSummaryFragment = MonthSummaryFragment()
+    private val monthBalanceFragment = MonthBalanceGraph()
     private var showingTransactionList = true
+    private val database by lazy {
+        Room.databaseBuilder(this, TransactionDatabase::class.java, "transactions.sb").build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +55,15 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AddTransactionActivity::class.java)
             startActivityForResult(intent, ADD_TRANSACTION_REQUEST_CODE)
         }
+
+        thread {
+            val initialTransactions = database.transactionDao().getAll()
+            runOnUiThread {
+                transactions.addAll(initialTransactions)
+                transactionRecyclerView.adapter?.notifyDataSetChanged()
+                updateMonthlySummary()
+            }
+        }
     }
 
     override fun onStart() {
@@ -54,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         updateMonthlySummary()
     }
 
-    private fun updateMonthlySummary () {
+    private fun updateMonthlySummary() {
         val currentDate = LocalDate.now()
         val currentMonth = currentDate.month
             .getDisplayName(FULL_STANDALONE, Locale("pl"))
@@ -72,7 +89,18 @@ class MainActivity : AppCompatActivity() {
         summaryCurrentIncome.text = income.toString()
         summaryCurrentExpenses.text = expenses.toString()
         summaryCurrentBalance.text = balance.toString()
-        summaryCurrentBalance.setTextColor(getColor(this, if (balance > 0) R.color.balance_positive else R.color.balance_negative))
+        val balanceColor = when {
+            balance > 0.0 -> {
+                R.color.balance_positive
+            }
+            balance < 0.0 -> {
+                R.color.balance_negative
+            }
+            else -> {
+                R.color.black
+            }
+        }
+        summaryCurrentBalance.setTextColor(getColor(this, balanceColor))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -88,8 +116,14 @@ class MainActivity : AppCompatActivity() {
             RESULT_CANCELED -> Log.d("MainActivityLog", "Cancelled creating new transaction")
             RESULT_OK -> {
                 val newTransaction = extractTransactionFromIntentData(data)
-                transactions.add(newTransaction)
-                transactionRecyclerView.adapter?.notifyDataSetChanged()
+                thread {
+                    database.transactionDao().insert(newTransaction)
+                    runOnUiThread {
+                        transactions.add(newTransaction)
+                        transactionRecyclerView.adapter?.notifyDataSetChanged()
+                        updateMonthlySummary()
+                    }
+                }
             }
         }
     }
@@ -98,30 +132,43 @@ class MainActivity : AppCompatActivity() {
         when (resultCode) {
             RESULT_CANCELED -> Log.d("MainActivityLog", "Cancelled modifying transaction")
             RESULT_OK -> {
-                val updatedTransaction = extractTransactionFromIntentData(data)
                 val position = data.getIntExtra(INTENT_DATA_POSITION, -1)
-                transactions[position] = updatedTransaction
-                transactionRecyclerView.adapter?.notifyDataSetChanged()
+                val id = transactions[position].id
+                val updatedTransaction = extractTransactionFromIntentData(data, id)
+                thread {
+                    database.transactionDao().update(updatedTransaction)
+                    runOnUiThread {
+                        transactions[position] = updatedTransaction
+                        transactionRecyclerView.adapter?.notifyDataSetChanged()
+                        updateMonthlySummary()
+                    }
+                }
             }
         }
     }
 
     fun handleRemoveTransaction(position: Int) {
-        transactions.removeAt(position)
-        transactionRecyclerView.adapter?.notifyDataSetChanged()
-        updateMonthlySummary()
+        val transactionToRemove = transactions[position]
+        thread {
+            database.transactionDao().delete(transactionToRemove)
+            runOnUiThread {
+                transactions.remove(transactionToRemove)
+                transactionRecyclerView.adapter?.notifyDataSetChanged()
+                updateMonthlySummary()
+            }
+        }
     }
 
-    private fun extractTransactionFromIntentData(data: Intent): Transaction {
+    private fun extractTransactionFromIntentData(data: Intent, id: Int = 0): Transaction {
         val value = data.getDoubleExtra(INTENT_DATA_VALUE, 0.0)
-        val date = data.getSerializableExtra(INTENT_DATA_DATE) as LocalDate
+        val date = data.getSerializableExtra(INTENT_DATA_DATE).toString().let { LocalDate.parse(it) }
         val category = data.getStringExtra(INTENT_DATA_CATEGORY).toString()
         val description = data.getStringExtra(INTENT_DESCRIPTION_DATA).toString()
-        return Transaction(0, value, date, category, description)
+        return Transaction(id, value, date, category, description)
     }
 
     fun switchToGraphView(view: View) {
-        val fragmentToShow = if (showingTransactionList) allTransactionsFragment else monthSummaryFragment
+        val fragmentToShow = if (showingTransactionList) allTransactionsFragment else monthBalanceFragment
         supportFragmentManager.beginTransaction()
             .replace(R.id.mainActivityBottomContainer, fragmentToShow, "MONTH_SUMMARY_GRAPH")
             .commit()

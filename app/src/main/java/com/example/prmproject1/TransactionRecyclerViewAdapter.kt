@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prmproject1.Common.CATEGORIES
@@ -17,6 +16,7 @@ import com.example.prmproject1.Common.INTENT_DESCRIPTION_DATA
 import com.example.prmproject1.Common.MODIFY_TRANSACTION_REQUEST_CODE
 import com.example.prmproject1.Common.INTENT_DATA_POSITION
 import com.example.prmproject1.Common.INTENT_DATA_VALUE
+import com.example.prmproject1.database.Transaction
 import kotlinx.android.synthetic.main.fragment_transaction.view.*
 
 /**

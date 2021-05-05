@@ -13,10 +13,10 @@ object Common {
     const val INTENT_DESCRIPTION_DATA = "INTENT_DESCRIPTION_DATA"
 
     val CATEGORIES = mapOf(
-        "przychód" to R.color.category_income,
         "rachunki" to R.color.category_bills,
         "jedzenie" to R.color.category_food,
         "zdrowie" to R.color.category_health,
-        "rozrywka" to R.color.category_entertainment
+        "rozrywka" to R.color.category_entertainment,
+        "przychód" to R.color.category_income
     )
 }

@@ -106,20 +106,22 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
-            android:id="@+id/radioButtonIncome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:checked="true"
-            android:text="Przychód" />
-
-        <RadioButton
             android:id="@+id/radioButtonExpense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:checked="true"
             android:text="Wydatek" />
+
+        <RadioButton
+            android:id="@+id/radioButtonIncome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:checked="false"
+            android:text="Przychód" />
+
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

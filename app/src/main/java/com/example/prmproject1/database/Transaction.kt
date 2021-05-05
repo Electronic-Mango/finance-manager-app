@@ -1,4 +1,4 @@
-package com.example.prmproject1
+package com.example.prmproject1.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,9 +9,9 @@ import java.time.LocalDate
  */
 @Entity
 data class Transaction(
-    @PrimaryKey(autoGenerate = true) var id: Int,
-    var value: Double,
-    var date: LocalDate,
-    var category: String,
-    var description: String
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    val value: Double,
+    val date: LocalDate,
+    val category: String,
+    val description: String
 )
