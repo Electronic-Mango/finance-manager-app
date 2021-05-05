@@ -9,5 +9,5 @@
     android:layout_marginLeft="0dp"
     android:layout_marginRight="0dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".TransactionListFragment"
+    tools:context=".mainactivity.TransactionListFragment"
     tools:listitem="@layout/fragment_transaction" />

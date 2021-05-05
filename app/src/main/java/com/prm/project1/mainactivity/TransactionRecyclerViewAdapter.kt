@@ -1,4 +1,4 @@
-package com.example.prmproject1
+package com.prm.project1.mainactivity
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -12,14 +12,16 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.example.prmproject1.Common.CATEGORIES
-import com.example.prmproject1.Common.INTENT_DATA_CATEGORY
-import com.example.prmproject1.Common.INTENT_DATA_DATE
-import com.example.prmproject1.Common.INTENT_DATA_POSITION
-import com.example.prmproject1.Common.INTENT_DATA_VALUE
-import com.example.prmproject1.Common.INTENT_DESCRIPTION_DATA
-import com.example.prmproject1.Common.MODIFY_TRANSACTION_REQUEST_CODE
-import com.example.prmproject1.database.Transaction
+import com.prm.project1.addtransactionactivity.AddTransactionActivity
+import com.prm.project1.Common.CATEGORIES
+import com.prm.project1.Common.INTENT_DATA_CATEGORY
+import com.prm.project1.Common.INTENT_DATA_DATE
+import com.prm.project1.Common.INTENT_DATA_POSITION
+import com.prm.project1.Common.INTENT_DATA_VALUE
+import com.prm.project1.Common.INTENT_DESCRIPTION_DATA
+import com.prm.project1.Common.MODIFY_TRANSACTION_REQUEST_CODE
+import com.prm.project1.R
+import com.prm.project1.database.Transaction
 import kotlinx.android.synthetic.main.fragment_transaction.view.*
 
 /**

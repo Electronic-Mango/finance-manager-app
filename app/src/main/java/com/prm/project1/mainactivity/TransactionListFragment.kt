@@ -1,4 +1,4 @@
-package com.example.prmproject1
+package com.prm.project1.mainactivity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.prmproject1.database.Transaction
+import com.prm.project1.R
+import com.prm.project1.database.Transaction
 
 /**
  * A [Fragment] representing a list of [Transaction].

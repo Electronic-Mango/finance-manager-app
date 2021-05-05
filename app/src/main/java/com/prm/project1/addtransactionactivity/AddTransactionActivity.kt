@@ -1,4 +1,4 @@
-package com.example.prmproject1
+package com.prm.project1.addtransactionactivity
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -8,19 +8,20 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import com.example.prmproject1.Common.CATEGORIES
-import com.example.prmproject1.Common.INTENT_DATA_CATEGORY
-import com.example.prmproject1.Common.INTENT_DATA_DATE
-import com.example.prmproject1.Common.INTENT_DATA_POSITION
-import com.example.prmproject1.Common.INTENT_DATA_VALUE
-import com.example.prmproject1.Common.INTENT_DESCRIPTION_DATA
+import com.prm.project1.Common.CATEGORIES
+import com.prm.project1.Common.INTENT_DATA_CATEGORY
+import com.prm.project1.Common.INTENT_DATA_DATE
+import com.prm.project1.Common.INTENT_DATA_POSITION
+import com.prm.project1.Common.INTENT_DATA_VALUE
+import com.prm.project1.Common.INTENT_DESCRIPTION_DATA
+import com.prm.project1.R
 import kotlinx.android.synthetic.main.activity_add_transaction.*
 import kotlinx.android.synthetic.main.content_add_transaction.*
 import java.time.LocalDate
 import kotlin.math.abs
 
 /**
- * [AppCompatActivity] responsible for creating new [com.example.prmproject1.database.Transaction].
+ * [AppCompatActivity] responsible for creating new [com.prm.project1.database.Transaction].
  */
 class AddTransactionActivity : AppCompatActivity() {
     private var position: Int = 0
@@ -58,17 +59,6 @@ class AddTransactionActivity : AppCompatActivity() {
         }
     }
 
-    private fun isProvidedValueCorrect(): Boolean {
-        val valueText = addTransactionFragmentValue.text
-        return if (valueText.isEmpty() || valueText.toString().toDouble() == 0.0) {
-            addTransactionFragmentValue.requestFocus()
-            addTransactionFragmentValue.error = "Podaj wartość transakcji!"
-            false
-        } else {
-            true
-        }
-    }
-
     override fun onStart() {
         super.onStart()
         position = intent.getIntExtra(INTENT_DATA_POSITION, -1).apply {
@@ -85,6 +75,17 @@ class AddTransactionActivity : AppCompatActivity() {
         )
         val category = intent.getStringExtra(INTENT_DATA_CATEGORY).toString()
         addTransactionFragmentCategory.setSelection(CATEGORIES.keys.toList().indexOf(category))
+    }
+
+    private fun isProvidedValueCorrect(): Boolean {
+        val valueText = addTransactionFragmentValue.text
+        return if (valueText.isEmpty() || valueText.toString().toDouble() == 0.0) {
+            addTransactionFragmentValue.requestFocus()
+            addTransactionFragmentValue.error = "Podaj wartość transakcji!"
+            false
+        } else {
+            true
+        }
     }
 
     private fun readEditTextFieldsToValues() {

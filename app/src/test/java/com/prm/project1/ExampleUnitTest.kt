@@ -1,4 +1,4 @@
-package com.example.prmproject1
+package com.prm.project1
 
 import org.junit.Test
 

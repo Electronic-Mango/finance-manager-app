@@ -1,4 +1,4 @@
-package com.example.prmproject1
+package com.prm.project1
 
 object Common {
     const val TRANSACTIONS_DATABASE_NAME = "transactions.db"

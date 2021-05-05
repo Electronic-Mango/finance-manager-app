@@ -1,10 +1,11 @@
-package com.example.prmproject1
+package com.prm.project1.mainactivity
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.prm.project1.R
 
 /**
  * A simple [Fragment] subclass.

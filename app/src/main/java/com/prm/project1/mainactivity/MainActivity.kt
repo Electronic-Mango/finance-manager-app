@@ -1,4 +1,4 @@
-package com.example.prmproject1
+package com.prm.project1.mainactivity
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,16 +9,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.room.Room
-import com.example.prmproject1.Common.ADD_TRANSACTION_REQUEST_CODE
-import com.example.prmproject1.Common.INTENT_DATA_CATEGORY
-import com.example.prmproject1.Common.INTENT_DATA_DATE
-import com.example.prmproject1.Common.INTENT_DATA_POSITION
-import com.example.prmproject1.Common.INTENT_DATA_VALUE
-import com.example.prmproject1.Common.INTENT_DESCRIPTION_DATA
-import com.example.prmproject1.Common.MODIFY_TRANSACTION_REQUEST_CODE
-import com.example.prmproject1.Common.TRANSACTIONS_DATABASE_NAME
-import com.example.prmproject1.database.Transaction
-import com.example.prmproject1.database.TransactionDatabase
+import com.prm.project1.addtransactionactivity.AddTransactionActivity
+import com.prm.project1.Common.ADD_TRANSACTION_REQUEST_CODE
+import com.prm.project1.Common.INTENT_DATA_CATEGORY
+import com.prm.project1.Common.INTENT_DATA_DATE
+import com.prm.project1.Common.INTENT_DATA_POSITION
+import com.prm.project1.Common.INTENT_DATA_VALUE
+import com.prm.project1.Common.INTENT_DESCRIPTION_DATA
+import com.prm.project1.Common.MODIFY_TRANSACTION_REQUEST_CODE
+import com.prm.project1.Common.TRANSACTIONS_DATABASE_NAME
+import com.prm.project1.R
+import com.prm.project1.database.Transaction
+import com.prm.project1.database.TransactionDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main_activity.*
 import kotlinx.android.synthetic.main.fragment_transaction_list.*

@@ -1,4 +1,4 @@
-package com.example.prmproject1.database
+package com.prm.project1.database
 
 import androidx.room.TypeConverter
 import java.time.LocalDate

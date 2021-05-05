@@ -5,7 +5,7 @@
     android:id="@+id/activityAddTransactionLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddTransactionActivity">
+    tools:context=".addtransactionactivity.AddTransactionActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
