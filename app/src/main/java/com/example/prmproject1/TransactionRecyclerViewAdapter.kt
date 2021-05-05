@@ -6,36 +6,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-import com.example.prmproject1.dummy.DummyContent.DummyItem
+import kotlinx.android.synthetic.main.fragment_transaction.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [DummyItem].
- * TODO: Replace the implementation with code for your data type.
+ * [RecyclerView.Adapter] that can display a [Transaction].
  */
 class TransactionRecyclerViewAdapter(
-    private val values: List<DummyItem>
-) : RecyclerView.Adapter<TransactionRecyclerViewAdapter.ViewHolder>() {
+    private val transactions: List<Transaction>
+) : RecyclerView.Adapter<TransactionRecyclerViewAdapter.TransactionViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_transaction, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_transaction, parent, false)
+        return TransactionViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
-        holder.idView.text = item.id
-        holder.contentView.text = item.content
+    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
+        val transaction = transactions[position]
+        holder.valueView.text = transaction.value.toString()
+        holder.dateView.text = transaction.date.toString()
+        holder.categoryView.text = transaction.category
+        holder.descriptionView.text = transaction.description
     }
 
-    override fun getItemCount(): Int = values.size
+    override fun getItemCount(): Int = transactions.size
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val idView: TextView = view.findViewById(R.id.item_number)
-        val contentView: TextView = view.findViewById(R.id.content)
-
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
-        }
+    inner class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val valueView: TextView = view.transactionFragmentValue
+        val dateView: TextView = view.transactionFragmentDate
+        val categoryView: TextView = view.transactionFragmentCategory
+        val descriptionView: TextView = view.transactionFragmentDescription
     }
+
 }
