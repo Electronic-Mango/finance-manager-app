@@ -41,7 +41,7 @@ class AddTransactionActivity : AppCompatActivity() {
         val category = addTransactionFragmentCategory.text.toString()
         val description = addTransactionFragmentDescription.text.toString()
         return Intent().apply {
-            putExtra(VALUE_DATA_RESULT, value)
+            putExtra(VALUE_DATA_RESULT, if (radioButtonIncome.isChecked) value else -value)
             putExtra(DATE_DATA_RESULT, date)
             putExtra(CATEGORY_DATA_RESULT, category)
             putExtra(DESCRIPTION_DATA_RESULT, description)

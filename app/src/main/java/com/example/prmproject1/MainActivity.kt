@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import com.example.prmproject1.Common.ADD_TRANSACTION_REQUEST_CODE
 import com.example.prmproject1.Common.CATEGORY_DATA_RESULT
 import com.example.prmproject1.Common.DATE_DATA_RESULT
@@ -29,6 +30,8 @@ class MainActivity : AppCompatActivity() {
 
     private val transactions = getInitialTransactions(10)
     private val allTransactionsFragment = TransactionListFragment(transactions)
+    private val monthSummaryFragment = MonthSummaryFragment()
+    private var showingTransactionList = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +40,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         supportActionBar!!.setDisplayShowHomeEnabled(false)
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.mainActivityBottomContainer, allTransactionsFragment, "ALL_TRANSACTIONS")
-            .commit()
-
+        switchToGraphView(contentMainActivityLayout.rootView)
 
         fabActivityMain.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
@@ -65,11 +65,7 @@ class MainActivity : AppCompatActivity() {
         summaryCurrentIncome.text = income.toString()
         summaryCurrentExpenses.text = expenses.toString()
         summaryCurrentBalance.text = balance.toString()
-        if (balance > 0) {
-            summaryCurrentBalance.setTextColor(ContextCompat.getColor(this, R.color.green))
-        } else {
-            summaryCurrentBalance.setTextColor(ContextCompat.getColor(this, R.color.red))
-        }
+        summaryCurrentBalance.setTextColor(getColor(this, if (balance > 0) R.color.green else R.color.red))
 
     }
 
@@ -101,7 +97,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun switchToGraphView(view: View) {
-        Snackbar.make(this, view, "Switching to graph...", Snackbar.LENGTH_LONG).show()
+        val fragmentToShow = if (showingTransactionList) allTransactionsFragment else monthSummaryFragment
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.mainActivityBottomContainer, fragmentToShow, "MONTH_SUMMARY_GRAPH")
+            .commit()
+        showingTransactionList = !showingTransactionList
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
