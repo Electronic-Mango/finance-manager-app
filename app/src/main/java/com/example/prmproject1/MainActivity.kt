@@ -14,7 +14,6 @@ import com.example.prmproject1.Common.VALUE_DATA_RESULT
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_transaction_list.*
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 /**
  * Main [AppCompatActivity] of the app, displays all recorded transactions.
@@ -53,11 +52,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun extractTransactionFromIntentData(data: Intent): Transaction {
         val value: Float = data.getFloatExtra(VALUE_DATA_RESULT, 0f)
-        val date = data.getStringExtra(DATE_DATA_RESULT).toString()
+        val date = data.getSerializableExtra(DATE_DATA_RESULT) as LocalDate
         val category = data.getStringExtra(CATEGORY_DATA_RESULT).toString()
         val description = data.getStringExtra(DESCRIPTION_DATA_RESULT).toString()
-        Log.d("ADD_TRANSACTION", "Received new transaction: $value $date $category $description")
-        return Transaction(1, value, LocalDate.now(), category, description)
+        return Transaction(1, value, date, category, description)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

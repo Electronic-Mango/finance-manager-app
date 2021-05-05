@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 /**
  * A [Fragment] representing a list of [Transaction].

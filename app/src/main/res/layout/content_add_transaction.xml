@@ -46,12 +46,11 @@
                 android:layout_height="wrap_content"
                 android:text="Data:" />
 
-            <EditText
-                android:id="@+id/addTransactionFragmentDate"
+            <Button
+                android:id="@+id/addTransactionFragmentDatePickerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="date" />
+                android:onClick="pickTransactionDate" />
 
         </TableRow>
 
