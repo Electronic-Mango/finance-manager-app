@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbarActivityMain)
 
         fabActivityMain.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "Dodawanie nowych transakcji...", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
     }
