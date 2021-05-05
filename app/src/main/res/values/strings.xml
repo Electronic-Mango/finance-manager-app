@@ -6,8 +6,22 @@
     <string name="title_activity_modify_transaction">Aktualizuj transakcję</string>
     <string name="add_transaction_action_share">Udostępnij</string>
 
-    <string name="summary_current_month_text">%s %d</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="category_indicator">Indykator kategorii</string>
+
+    <string name="value_label">Kwota:</string>
+    <string name="date_label">Data:</string>
+    <string name="category_label">Kategoria:</string>
+    <string name="description_label">Opis:</string>
+    <string name="expense_label">Wydatek</string>
+    <string name="income_label">Przychód</string>
+
+    <string name="summary_current_month_text">%s %d</string>
+    <string name="month_summary_label">Miesiąc:</string>
+    <string name="income_summary_label">Uznania:</string>
+    <string name="expenses_summary_label">Obciążenia:</string>
+    <string name="balance_summary_label">Saldo:</string>
+    <string name="apply_transaction_description">Zatwierdź daną transakcję</string>
+    <string name="switch_view_description">Przełącz widok listy i wykresu</string>
 </resources>

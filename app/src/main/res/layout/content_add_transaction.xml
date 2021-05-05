@@ -26,14 +26,16 @@
                 android:id="@+id/addTransactionFragmentValueLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wartość:" />
+                android:labelFor="@id/addTransactionFragmentValue"
+                android:text="@string/value_label" />
 
             <EditText
                 android:id="@+id/addTransactionFragmentValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="number|numberDecimal" />
+                android:inputType="number|numberDecimal"
+                android:importantForAutofill="no" />
         </TableRow>
 
         <TableRow
@@ -44,7 +46,7 @@
                 android:id="@+id/addTransactionFragmentDateLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Data:" />
+                android:text="@string/date_label" />
 
             <Button
                 android:id="@+id/addTransactionFragmentDatePickerButton"
@@ -62,7 +64,7 @@
                 android:id="@+id/addTransactionFragmentCategoryLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kategoria:" />
+                android:text="@string/category_label" />
 
             <Spinner
                 android:id="@+id/addTransactionFragmentCategory"
@@ -80,7 +82,8 @@
                 android:id="@+id/addTransactionFragmentDescriptionLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Opis:" />
+                android:labelFor="@id/addTransactionFragmentDescription"
+                android:text="@string/description_label" />
 
             <EditText
                 android:id="@+id/addTransactionFragmentDescription"
@@ -89,7 +92,8 @@
                 android:ems="10"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
-                android:lines="3" />
+                android:lines="3"
+                android:importantForAutofill="no" />
 
         </TableRow>
     </TableLayout>
@@ -112,7 +116,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:checked="true"
-            android:text="Wydatek" />
+            android:text="@string/expense_label" />
 
         <RadioButton
             android:id="@+id/radioButtonIncome"
@@ -120,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:checked="false"
-            android:text="Przychód" />
+            android:text="@string/income_label" />
 
     </RadioGroup>
 

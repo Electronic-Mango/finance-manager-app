@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="VALUE"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="DATE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:text="CATEGORY"
         android:textAllCaps="true"
         app:layout_constraintStart_toEndOf="@+id/categoryIndicator"
         app:layout_constraintTop_toBottomOf="@+id/middleDivider" />
@@ -45,7 +42,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
-        android:text="DESCRIPTION"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/middleDivider" />
 
@@ -77,5 +73,6 @@
         android:backgroundTint="#FF0000"
         app:layout_constraintBottom_toBottomOf="@+id/transactionFragmentCategory"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/transactionFragmentCategory" />
+        app:layout_constraintTop_toTopOf="@+id/transactionFragmentCategory"
+        android:contentDescription="@string/category_indicator" />
 </androidx.constraintlayout.widget.ConstraintLayout>
