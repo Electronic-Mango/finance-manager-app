@@ -64,11 +64,8 @@ class AddTransactionActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        position = intent.getIntExtra(INTENT_DATA_POSITION, -1).apply {
-            if (this < 0) return
-        }
-
         setTitle(R.string.title_activity_modify_transaction)
+        position = intent.getIntExtra(INTENT_DATA_POSITION, -1).apply { if (this < 0) return }
         val value = intent.getDoubleExtra(INTENT_DATA_VALUE, 0.0)
         chipGroup.check(if (value < 0) R.id.chipExpense else R.id.chipIncome)
         addTransactionFragmentValue.setText(value.toBigDecimal().abs().setScale(2).toPlainString())
@@ -82,7 +79,6 @@ class AddTransactionActivity : AppCompatActivity() {
 
     private fun isProvidedValueCorrect(): Boolean {
         val valueText = addTransactionFragmentValue.text.toString()
-        Log.d("ADD", "value=${valueText.toBigDecimal()} max=${Double.MAX_VALUE.toBigDecimal()}")
         return if (valueText.isEmpty() || valueText.toDouble() == 0.0) {
             addTransactionFragmentValue.requestFocus()
             addTransactionFragmentValue.error = "Podaj wartość transakcji!"

@@ -103,13 +103,13 @@ class MonthBalanceGraphView(context: Context, attributeSet: AttributeSet) : View
         points.forEach {
             val newX = it.x.viewX()
             val newY = it.y.viewY()
-            // Adding double to ensure that lines are continuous.
+            // Adding doubles to ensure that lines are continuous.
             linesArray.add(newX)
             linesArray.add(newY)
             linesArray.add(newX)
             linesArray.add(newY)
         }
-        // Removing first and last point so that each quadruplet is between two different points.
+        // Removing first and last point so that each quadruplet represents two different points.
         linesArray.removeFirst()
         linesArray.removeFirst()
         linesArray.removeLast()
@@ -118,9 +118,9 @@ class MonthBalanceGraphView(context: Context, attributeSet: AttributeSet) : View
     }
 
     private fun Canvas.drawAxis() {
-        // Y axis
+        // Y axis.
         drawLine(VIEW_PADDING, VIEW_PADDING, VIEW_PADDING, height - VIEW_PADDING, axisLinePaint)
-        // X axis is either on the very top, very bottom, or somewhere in the middle, depending on given data
+        // X axis is either on the very top, very bottom, or somewhere in the middle, depending on given data.
         val xAxisYCoordinate = when {
             yMin > 0 -> height - VIEW_PADDING
             yMax < 0 -> VIEW_PADDING

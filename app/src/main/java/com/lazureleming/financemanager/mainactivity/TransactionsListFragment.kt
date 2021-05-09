@@ -56,9 +56,8 @@ class TransactionsListFragment(private val transactions: List<Transaction>) : Fr
         summaryCurrentExpenses?.text = expenses.abs().toPlainString()
         summaryCurrentBalance?.text = balance.abs().toPlainString()
         val balanceColor = when {
-            balance.toDouble() > 0.0 -> R.color.balance_positive
-            balance.toDouble() < 0.0 -> R.color.balance_negative
-            else -> R.color.black
+            balance.toDouble() >= 0.0 -> R.color.balance_positive
+            else -> R.color.balance_negative
         }
         summaryCurrentBalance?.setTextColor(ContextCompat.getColor(requireContext(), balanceColor))
         val balanceSignColor = when {
